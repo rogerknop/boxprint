@@ -8,19 +8,13 @@ ToDo:
 - git repo erstellen
 
 Features:
-- config in Datei auslagern und per command line parameter mitgeben - weitere werte
-  . Höhe Platinen Sockel & Lochradius für Schrauben
 - Schrauben Ja/Nein - cyl bis Deckel Achtung! Lochraster Sockel müssen dann evl. Platz lassen
   . Deckel
   . Boden
+- Schrauben aussen ja/nein - aussen an den 4 ecken ringe
 - Array für Löcher
 
-DruckTests:
-- kulanz 0.3
-- größere Box => gleiches Klickverhalten
-
 */
-
 
 function main () {
     let core = new Core();

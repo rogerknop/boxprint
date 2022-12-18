@@ -1,15 +1,15 @@
 {
-    "name": "Default",
-    "exportPrefix": "defaultbox",
+    "name": "Test",
+    "exportPrefix": "test",
     "type": "box",
     "modelData": {
-        "width": 40, //kurze Seite
-        "depth": 70, //lange Seite
+        "width": 10, //kurze Seite
+        "depth": 20, //lange Seite
         "height": 10,
         "thickness": 1.5, 
-        "rounded": 0.3,
+        "rounded": 0.1,
         "ventilationCount": 4,
-        "sockelType": 1, //0=Kein Sockel / 1=Lochraster 2.54mm Abstand
+        "sockelType": 0, //0=Kein Sockel / 1=Lochraster 2.54mm Abstand
         "sockel_height": 10,
         "lid_kulanz": 0.3, //0.3 Press / 0.4 minimal spiel aber klickt gut
         "clickRadiusPercent": 0.4, //Prozent von Thickness
@@ -19,6 +19,5 @@
         "socketHeight": 5,
         "socketOuterRadius": 2,
         "socketInnerRadius": 1,
-        "outerScrews": true,
     }
 }

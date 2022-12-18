@@ -92,6 +92,32 @@ class Box {
             }
         }
 
+        if (this.outerScrews) {
+            let screw_width = 5;
+            let screw_depth = 5;
+            let outer_screw = roundedCuboid({size: [screw_width+this.thickness, screw_depth, this.thickness], center: [0, 0, 0], roundRadius: this.rounded});
+            outer_screw = center({relativeTo: [0, 0, this.thickness/2]}, outer_screw);
+
+            let outer_screw_hole = cylinder( {radius: 1.5, height: this.thickness*3});
+            outer_screw = subtract(outer_screw, outer_screw_hole);
+
+            let osHeight = (this.thickness/2);
+            let osWidth = (this.width/2);
+            let osDepth = (this.depth/2);
+            osWidth = osWidth + (screw_width/2);
+            osDepth = osDepth - (screw_depth/2);
+                
+            let os = center({relativeTo: [osWidth, osDepth, osHeight]}, outer_screw);
+            result = union(result, os);
+            os = center({relativeTo: [osWidth, -osDepth, osHeight]}, outer_screw);
+            result = union(result, os);
+            os = center({relativeTo: [-osWidth, -osDepth, osHeight]}, outer_screw);
+            result = union(result, os);
+            os = center({relativeTo: [-osWidth, osDepth, osHeight]}, outer_screw);
+            result = union(result, os);
+        
+        }
+
         return result;
     }
 
