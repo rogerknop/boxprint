@@ -8,17 +8,34 @@
         "height": 10,
         "thickness": 1.5, 
         "rounded": 0.3,
-        "ventilationCount": 4,
-        "sockelType": 1, //0=Kein Sockel / 1=Lochraster 2.54mm Abstand
-        "sockel_height": 10,
-        "lid_kulanz": 0.3, //0.3 Press / 0.4 minimal spiel aber klickt gut
-        "clickRadiusPercent": 0.4, //Prozent von Thickness
-        "clickHeightCorpus": 9,
-        "clickHeightLid": 10,
-        "ventilationLengthPercent": 0.8,
-        "socketHeight": 5,
-        "socketOuterRadius": 2,
-        "socketInnerRadius": 1,
         "outerScrews": true,
+        "ventilation": {
+            "count": 5,
+            "lengthPercent": 0.3,
+            "width": 1.5,
+            "shift" : -20
+        },
+        "socketBreadboard": {
+            //Lochraster (Breadboard) 2.54mm Abstand
+            "active": true,
+            "height": 5,
+            "outerRadius": 2,
+            "innerRadius": 1,
+            "maxWidth": 0,  //0=max. Width
+            "maxDepth": 20,  //0=max. Depth
+            "shiftWidth": 0,
+            "shiftDepth": -20
+        },
+        "socketShelly": {
+            "active": false,
+            "model": "rgb",
+            "shift": 0
+        },
+        "click": {
+            "lidReduce": 0.3, //0.3 Press / 0.4 minimal spiel aber klickt gut
+            "radiusPercent": 0.4, //Prozent von Thickness
+            "heightCorpus": 9,
+            "heightLid": 10
+        }
     }
 }
