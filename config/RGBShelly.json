@@ -3,7 +3,7 @@
     "techName": "rgbshelly",
     "type": "box",
     "modelData": {
-        "width": 46.5, //kurze Seite
+        "width": 50, //kurze Seite
         "depth": 60, //lange Seite
         "height": 19,
         "thickness": 1.5, 
@@ -30,6 +30,8 @@
         "socketShelly": {
             "active": true,
             "model": "rgb",
+            "shiftWidth": 0,
+            "shiftDepth": 8
         },
         "click": {
             "active": true,

@@ -310,18 +310,12 @@ class Box {
             socketDepth = 38; //Shelly Maß 38; 38.1 locker
         }
 
-        let centerWidthShift = -(this.computed.innerWidth-socketWidth)/2;
-        let centerDepthShift = (this.computed.innerDepth-socketDepth-socketThickness)/2;
-        let centerWidthDepthShift = -( (this.computed.innerDepth/2) - (this.computed.innerDepth-socketDepth) + (socketThickness/2) );
-        let centerDepthWidthShift = ((this.computed.innerWidth-socketThickness)/2)+(centerWidthShift*2)+socketThickness;
-        let shellybox = cuboid({size: [socketWidth, socketThickness, height], center: [centerWidthShift, centerWidthDepthShift, (height/2)+this.thickness]});
+        let shellybox = cuboid({size: [socketWidth+socketThickness, socketDepth+socketThickness, height], center: [this.socket.shiftWidth, this.socket.shiftDepth, (height/2)+this.thickness]});
+        shellybox = subtract(shellybox,  cuboid({size: [socketWidth, socketDepth, height], center: [this.socket.shiftWidth, this.socket.shiftDepth, (height/2)+this.thickness]}));
         result = union(result, shellybox);
 
         //let dim = measureDimensions(shellybox);
         //let center = measureCenter(shellybox)
-
-        shellybox = cuboid({size: [socketThickness, socketDepth+socketThickness, height], center: [centerDepthWidthShift, centerDepthShift, (height/2)+this.thickness]});
-        result = union(result, shellybox);
 
         return result;
     }

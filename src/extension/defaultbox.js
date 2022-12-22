@@ -13,7 +13,7 @@ class Extension {
         Object.assign(this, params);
     }
 
-    processEndxxx(box) {
+    processEnd(box) {
         //Do something with:
         //  box.computed.corpus 
         //  box.computed.lid 

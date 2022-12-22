@@ -32,6 +32,8 @@
         "socketShelly": {
             "active": true,
             "model": "rgb",
+            "shiftWidth": 0,
+            "shiftDepth": 8
         },
         "click": {
             "active": false,
