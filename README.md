@@ -11,9 +11,13 @@ npm install
 In config/configfilename.json die entsprechenden Einstellungen vornehmen
 node src/index.js [configfilename without .json]
 
-npm run start -> Nodemon mit Watch über Änderungen in src oder config.  
-Es geht auch mit einer anderen Konfiguration: npm run start -- test   
-=> Es wird dann die Konfiguration ./config/test.json verwendet
+```
+npm run start 
+  => Nodemon mit Watch über Änderungen in src oder config.  
+
+npm run start -- test
+  => Wie oben nur mit anderer Konfiguration: ./config/test.json verwendet
+```
 
 Viele Objekte innerhalb der Konfiguration lassen sich durch das *active* Attribut ausblenden (=false). Dies ist für Tests recht hilfreich.
 
