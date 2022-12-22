@@ -1,23 +1,26 @@
 {
     "name": "Default",
-    "exportPrefix": "defaultbox",
+    "techName": "defaultbox",
     "type": "box",
     "modelData": {
-        "width": 40, //kurze Seite
-        "depth": 70, //lange Seite
-        "height": 10,
+        "width": 50, //kurze Seite
+        "depth": 44, //lange Seite
+        //"width": 50, //kurze Seite
+        //"depth": 80, //lange Seite
+        "height": 5.5,
         "thickness": 1.5, 
         "rounded": 0.3,
-        "outerScrews": true,
+        "outerScrews": false,
         "ventilation": {
+            "active": false,
             "count": 5,
-            "lengthPercent": 0.3,
+            "lengthPercent": 0.6,
             "width": 1.5,
-            "shift" : -20
+            "shift" : 0
         },
         "socketBreadboard": {
             //Lochraster (Breadboard) 2.54mm Abstand
-            "active": true,
+            "active": false,
             "height": 5,
             "outerRadius": 2,
             "innerRadius": 1,
@@ -27,15 +30,49 @@
             "shiftDepth": -20
         },
         "socketShelly": {
-            "active": false,
+            "active": true,
             "model": "rgb",
-            "shift": 0
         },
         "click": {
+            "active": false,
+            //Diese Werte am Besten nicht verändern!
             "lidReduce": 0.3, //0.3 Press / 0.4 minimal spiel aber klickt gut
             "radiusPercent": 0.4, //Prozent von Thickness
             "heightCorpus": 9,
             "heightLid": 10
+        },
+        "holeControl": {
+            "active": true,
+            "holes": [
+                {
+                    "active": true,
+                    "position": "f",   //f=front / b=back / l=left / r=right / g=round
+                    "shape": "c", //c=circle / r=rectangle
+                    "radius": 1.5,
+                    //Shift vom Mittelpunkt
+                    "shiftWidth": -4,
+                    "shiftHeight": 0
+                },
+                {
+                    "active": true,
+                    "position": "l" , //f=front / b=back / l=left / r=right / g=round
+                    "shape": "r", //c=circle / r=rectangle
+                    "width": 8,
+                    "depth": 4,
+                    //Shift vom Mittelpunkt
+                    "shiftWidth": 6,
+                    "shiftHeight": 0
+                },
+                {
+                    "active": false,
+                    "position": "g" , //f=front / b=back / l=left / r=right / g=round
+                    "shape": "c", //c=circle / r=rectangle
+                    "radius": 2,
+                    //Shift vom Mittelpunkt
+                    "shiftWidth": 0,
+                    "shiftDepth": 0
+                }
+            ]
         }
     }
 }

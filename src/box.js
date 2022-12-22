@@ -9,7 +9,12 @@ const { roundedCuboid, cuboid, rectangle, roundedRectangle, cylinder } = jscad.p
 const { subtract, union } = jscad.booleans;
 const { center, rotate } = jscad.transforms;
 const { degToRad } = jscad.utils;
-const { extrudeLinear } = jscad.extrusions
+const { extrudeLinear, extrudeRectangular } = jscad.extrusions;
+const { vectorText } = jscad.text;
+const { path2 } = jscad.geometries;
+const { measureDimensions, measureCenter } = jscad.measurements;
+
+const segmentToPath = (segment) => { return path2.fromPoints({close: false}, segment) };
 
 class Box {
     core;
@@ -23,18 +28,44 @@ class Box {
     click = {}; 
     ventilation = {};
 
+    computed = {
+    }
+
     //-----------------------------------------------------------------------------------------------------------------
     constructor(core, params) {
         this.core = core;
         Object.assign(this, params);
+
+        this.computed.corpus = this.corpus();
+        this.computed.lid    = this.lid();
     }
     
     //-----------------------------------------------------------------------------------------------------------------
     corpus() {
-        let result = roundedCuboid({size: [this.width, this.depth, this.height+this.rounded], center: [0, 0, (this.height/2)], roundRadius: this.rounded});
-        result = subtract(result,  roundedCuboid({size: [this.width-(this.thickness*2), this.depth-(this.thickness*2), this.height+this.rounded], center: [0, 0, (this.height/2)+(this.thickness*2)], roundRadius: this.rounded}));
+        this.computed.innerWidth = this.width-(this.thickness*2);
+        this.computed.innerDepth = this.depth-(this.thickness*2);
+        this.computed.innerHeight = this.height-this.thickness;
+        this.computed.innerCenterHeight = (this.computed.innerHeight/2)+this.thickness;
+
+        let result = roundedCuboid({size: [this.width, this.depth, this.height+this.rounded], center: [0, 0, ((this.height+this.rounded)/2)], roundRadius: this.rounded});
+        result = subtract(result,  roundedCuboid({size: [this.computed.innerWidth, this.computed.innerDepth, this.height+this.rounded], center: [0, 0, ((this.height+this.rounded)/2)+this.thickness], roundRadius: this.rounded}));
+        
+        /*
+        let desc = vectorText({ yOffset: 0, height: 10, extrudeOffset: 2, input: 'Rogi' });
+        let p = [];
+        desc.forEach(function (s) {
+            //p.push(extrudeRectangular(s, { w: 3, h: 3 }));
+            result = union(result, extrudeRectangular(s, { w: 3, h: 3 }));
+        });
+        result = union(result, p);
+        
+
+        const paths = desc.map((segment) => segmentToPath(segment))
+        let text = this.csgFromSegments(2, desc);
+        */
+
         let notround = cuboid({size: [this.width, this.depth, this.rounded]});
-        notround = center({relativeTo: [0, 0, this.height]}, notround);
+        notround = center({relativeTo: [0, 0, this.height+(this.rounded/2)]}, notround);
         result = subtract(result, notround);
 
         let r = ((this.thickness/2) * this.click.radiusPercent) - 0.05; 
@@ -46,15 +77,17 @@ class Box {
         let cyl = cylinder( {radius: r, height: h});
         cyl = rotate([0,degToRad(90),0], cyl);
         
-        let c = center({relativeTo: [0, clickDepth, clickHeight]}, cyl);
-        result = union(result, c);
-        c = center({relativeTo: [0, -clickDepth, clickHeight]}, cyl);
-        result = union(result, c);
-        cyl = rotate([0,0,degToRad(90)], cyl);
-        c = center({relativeTo: [ clickWidth, 0, clickHeight]}, cyl);
-        result = union(result, c);
-        c = center({relativeTo: [-clickWidth, 0, clickHeight]}, cyl);
-        result = union(result, c);
+        if (this.click.active) {
+            let c = center({relativeTo: [0, clickDepth, clickHeight]}, cyl);
+            result = union(result, c);
+            c = center({relativeTo: [0, -clickDepth, clickHeight]}, cyl);
+            result = union(result, c);
+            cyl = rotate([0,0,degToRad(90)], cyl);
+            c = center({relativeTo: [ clickWidth, 0, clickHeight]}, cyl);
+            result = union(result, c);
+            c = center({relativeTo: [-clickWidth, 0, clickHeight]}, cyl);
+            result = union(result, c);
+        }
 
         //Sockets
         if (this.socketBreadboard?.active) {
@@ -89,6 +122,12 @@ class Box {
             result = union(result, os);
         }
 
+        if (this.holeControl.active && (this.holeControl.holes.length>0)) {
+            this.holeControl.holes.forEach((hole) => {
+                if (hole.active) result = this.addHole(result, hole);
+            });
+        }
+
         return result;
     }
 
@@ -100,7 +139,7 @@ class Box {
         notround = center({relativeTo: [0, 0, -(this.rounded/2)+this.thickness]}, notround);
         result = subtract(result, notround);
     
-        let lid = roundedRectangle({size: [this.width-(this.thickness*2)-this.click.lidReduce, this.depth-(this.thickness*2)-this.click.lidReduce], roundRadius: 2})
+        let lid = roundedRectangle({size: [this.computed.innerWidth-this.click.lidReduce, this.computed.innerDepth-this.click.lidReduce], roundRadius: 2})
         lid = extrudeLinear({height: this.thickness}, lid);
         lid = center({relativeTo: [0, 0, (this.thickness/2)+this.thickness-this.rounded]}, lid);
         result = union(result, lid);
@@ -119,28 +158,30 @@ class Box {
         let gapcyl = cylinder( {radius: r*2, height: h});
         gapcyl = rotate([0,degToRad(90),0], gapcyl);
         
-        //Lücken zum Abheben
-        c = center({relativeTo: [0, (this.depth/2), this.thickness-r]}, gapcyl);
-        result = subtract(result, c);
-        c = center({relativeTo: [0, -(this.depth/2), this.thickness-r]}, gapcyl);
-        result = subtract(result, c);
+        if (this.click.active) {
+            //Lücken zum Abheben
+            c = center({relativeTo: [0, (this.depth/2), this.thickness-r]}, gapcyl);
+            result = subtract(result, c);
+            c = center({relativeTo: [0, -(this.depth/2), this.thickness-r]}, gapcyl);
+            result = subtract(result, c);
 
-        //Click Lücken
-        c = center({relativeTo: [0, clickDepth, clickHeight]}, cyl);
-        result = subtract(result, c);
-        c = center({relativeTo: [0, -clickDepth, clickHeight]}, cyl);
-        result = subtract(result, c);
-        cyl = rotate([0,0,degToRad(90)], cyl);
-        c = center({relativeTo: [clickWidth, 0, clickHeight]}, cyl);
-        result = subtract(result, c);
-        c = center({relativeTo: [-clickWidth, 0, clickHeight]}, cyl);
-        result = subtract(result, c);
-    
-        if (this.ventilation.count>0) {
+            //Click Lücken
+            c = center({relativeTo: [0, clickDepth, clickHeight]}, cyl);
+            result = subtract(result, c);
+            c = center({relativeTo: [0, -clickDepth, clickHeight]}, cyl);
+            result = subtract(result, c);
+            cyl = rotate([0,0,degToRad(90)], cyl);
+            c = center({relativeTo: [clickWidth, 0, clickHeight]}, cyl);
+            result = subtract(result, c);
+            c = center({relativeTo: [-clickWidth, 0, clickHeight]}, cyl);
+            result = subtract(result, c);
+        }    
+
+        if (this.ventilation.active && (this.ventilation.count>0)) {
             let ventilationWidth = this.ventilation.width;
             let ventilationShift = this.ventilation.shift || 0;
-            let availDepth = this.depth-(this.thickness*2)-(this.click.lidReduce*2);
-            let availWidth = this.width-(this.thickness*2)-(this.click.lidReduce*2);
+            let availDepth = this.computed.innerDepth-(this.click.lidReduce*2);
+            let availWidth = this.computed.innerWidth-(this.click.lidReduce*2);
             let ventilationLength = availDepth * this.ventilation.lengthPercent;
             let gap = (availWidth / (this.ventilation.count + 1));
             let currPos = -(availWidth / 2) ;
@@ -156,9 +197,69 @@ class Box {
     }
 
     //-----------------------------------------------------------------------------------------------------------------
+    addHole(result, hole) {
+        let holeShape;
+        if (hole.shape=="c") {
+            holeShape = cylinder( {radius: hole.radius, height: this.thickness*1.1});
+        }
+        if (hole.shape=="r") {
+            holeShape = roundedCuboid({size: [hole.width, hole.depth, this.thickness*1.5], roundRadius: 0.1});
+        }
+
+        let width=0;
+        let depth=0;
+        let height=this.computed.innerCenterHeight;
+        let rotateX=0;
+        let rotateY=0;
+
+        if (hole.position=="b") {
+            rotateX=90;
+            width+=hole.shiftWidth;
+            depth=-((this.computed.innerDepth/2)+(this.thickness/2));
+            height+=hole.shiftHeight;
+        }
+        if (hole.position=="f") {
+            rotateX=90;
+            width-=hole.shiftWidth;
+            depth=((this.computed.innerDepth/2)+(this.thickness/2));
+            height+=hole.shiftHeight;
+        }
+        if (hole.position=="r") {
+            rotateX=90;
+            rotateY=90;
+            depth-=hole.shiftWidth;
+            width=-((this.computed.innerWidth/2)+(this.thickness/2));
+            height+=hole.shiftHeight;
+        }
+        if (hole.position=="l") {
+            rotateX=90;
+            rotateY=90;
+            depth+=hole.shiftWidth;
+            width=((this.computed.innerWidth/2)+(this.thickness/2));
+            height+=hole.shiftHeight;
+        }
+        if (hole.position=="g") {
+            width=-hole.shiftDepth;
+            depth=-hole.shiftWidth;
+            height=(this.thickness)/2;
+        }
+
+        holeShape = rotate([degToRad(rotateX), 0, degToRad(rotateY)], holeShape);
+        holeShape = center({relativeTo: [width, depth, height]}, holeShape);
+
+        if (holeShape) {
+            //result = union(result, holeShape);
+            result = subtract(result, holeShape);
+        }
+
+        return result;
+    }
+
+    //-----------------------------------------------------------------------------------------------------------------
     addSocketBreadboard(result) {
         //Für generische schneidbare Platinen
         this.socket = this.socketBreadboard;
+
         let socket_r = this.socket.outerRadius;
         let socket_h = this.socket.height;
         let socket = cylinder( {radius: socket_r, height: socket_h});
@@ -167,12 +268,10 @@ class Box {
         let socket_height = (this.thickness/2)+this.thickness+(socket_h/2);
         socket = subtract(socket, socket_innen);
         socket = center({relativeTo: [0, 0, socket_height]}, socket);
-
+        
         //Min 2mm Abstand vom Rand
-
         let socketDepth; 
         let socketWidth;
-
         if (this.socket.maxDepth>0) { socketDepth = this.socket.maxDepth / 2; }
         else { socketDepth = (this.depth/2) - this.thickness - socket_r - 2; }
         if (this.socket.maxWidth>0) { socketWidth = this.socket.maxWidth / 2; }
@@ -199,34 +298,54 @@ class Box {
 
     //-----------------------------------------------------------------------------------------------------------------
     addSocketShelly(result) {
-        //https://www.thingiverse.com/thing:4842901
-        
-        /*
-        Performance grottenschlecht!!!
-        const objDeserializer = require('@jscad/obj-deserializer');
-        const rawData = fs.readFileSync('./src/import/test.obj', 'utf8');
-        let rgbShelly = objDeserializer.deserialize({ output: 'geometry', addMetaData: false }, rawData);
-        result = union(result, rgbShelly);
-        */
+        this.socket = this.socketShelly;
+
+        let socketWidth = 1;
+        let socketDepth = 1;
+        let height = 4;
+        let socketThickness = 1;
+
+        if (this.socket.model=="rgb") {
+            socketWidth = 42.7; //Shelly Maß 42.7; 42.8 locker
+            socketDepth = 38; //Shelly Maß 38; 38.1 locker
+        }
+
+        let centerWidthShift = -(this.computed.innerWidth-socketWidth)/2;
+        let centerDepthShift = (this.computed.innerDepth-socketDepth-socketThickness)/2;
+        let centerWidthDepthShift = -( (this.computed.innerDepth/2) - (this.computed.innerDepth-socketDepth) + (socketThickness/2) );
+        let centerDepthWidthShift = ((this.computed.innerWidth-socketThickness)/2)+(centerWidthShift*2)+socketThickness;
+        let shellybox = cuboid({size: [socketWidth, socketThickness, height], center: [centerWidthShift, centerWidthDepthShift, (height/2)+this.thickness]});
+        result = union(result, shellybox);
+
+        //let dim = measureDimensions(shellybox);
+        //let center = measureCenter(shellybox)
+
+        shellybox = cuboid({size: [socketThickness, socketDepth+socketThickness, height], center: [centerDepthWidthShift, centerDepthShift, (height/2)+this.thickness]});
+        result = union(result, shellybox);
 
         return result;
     }
 
     //-----------------------------------------------------------------------------------------------------------------
     export() {
-        let corpus = this.corpus();
+        let jsonData = jsonSerializer.serialize({}, this.computed.corpus);
+        writeFile(`./export/json/` + this.core.config.techName + `-corpus.jscad.json`, jsonData);
+        let objData = objSerializer.serialize({}, this.computed.corpus);
+        writeFile(`./export/obj/` + this.core.config.techName + `-corpus.obj`, objData);
 
-        let jsonData = jsonSerializer.serialize({}, corpus);
-        writeFile(`./export/json/` + this.core.config.exportPrefix + `-corpus.jscad.json`, jsonData);
-        let objData = objSerializer.serialize({}, corpus);
-        writeFile(`./export/obj/` + this.core.config.exportPrefix + `-corpus.obj`, objData);
+        jsonData = jsonSerializer.serialize({}, this.computed.lid);
+        writeFile(`./export/json/` + this.core.config.techName + `-lid.jscad.json`, jsonData);
+        objData = objSerializer.serialize({}, this.computed.lid);
+        writeFile(`./export/obj/` + this.core.config.techName + `-lid.obj`, objData);
+    }
 
-        let lid = this.lid();
-
-        jsonData = jsonSerializer.serialize({}, lid);
-        writeFile(`./export/json/` + this.core.config.exportPrefix + `-lid.jscad.json`, jsonData);
-        objData = objSerializer.serialize({}, lid);
-        writeFile(`./export/obj/` + this.core.config.exportPrefix + `-lid.obj`, objData);
+    //-----------------------------------------------------------------------------------------------------------------
+    csgFromSegments (extrudeOffset, segments) {
+        let output = [];
+        for (let i = 0, il = segments.length; i < il; i++) {
+          output.push(rectangular_extrude(segments[i], { w: extrudeOffset, h: 2 }));
+        }
+        return union(output);
     }
 }
   
