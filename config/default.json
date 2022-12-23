@@ -38,8 +38,8 @@
         "click": {
             "active": false,
             //Diese Werte am Besten nicht verändern!
-            "lidReduce": 0.3, //0.3 Press / 0.4 minimal spiel aber klickt gut
-            "radiusPercent": 0.4, //Prozent von Thickness
+            "lidReduce": 0.3, //Bei 2 Thickness => 0.3 Press / 0.4 minimal spiel aber klickt gut /// Bei 1.5 Thickness.
+            "radiusPercent": 0.5, //Prozent von Thickness - 0.4 Bei 2 Thickness / 0.5 bei 1.5 Thickness
             "heightCorpus": 9,
             "heightLid": 10
         },
