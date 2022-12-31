@@ -28,8 +28,7 @@ class Box {
     click = {}; 
     ventilation = {};
 
-    computed = {
-    }
+    computed = {};
 
     //-----------------------------------------------------------------------------------------------------------------
     constructor(core, params) {
@@ -50,7 +49,7 @@ class Box {
         let result = roundedCuboid({size: [this.width, this.depth, this.height+this.rounded], center: [0, 0, ((this.height+this.rounded)/2)], roundRadius: this.rounded});
         result = subtract(result,  roundedCuboid({size: [this.computed.innerWidth, this.computed.innerDepth, this.height+this.rounded], center: [0, 0, ((this.height+this.rounded)/2)+this.thickness], roundRadius: this.rounded}));
         
-        /*
+        /* GEHT LEIDER NICHT
         let desc = vectorText({ yOffset: 0, height: 10, extrudeOffset: 2, input: 'Rogi' });
         let p = [];
         desc.forEach(function (s) {
@@ -58,8 +57,6 @@ class Box {
             result = union(result, extrudeRectangular(s, { w: 3, h: 3 }));
         });
         result = union(result, p);
-        
-
         const paths = desc.map((segment) => segmentToPath(segment))
         let text = this.csgFromSegments(2, desc);
         */
@@ -68,16 +65,17 @@ class Box {
         notround = center({relativeTo: [0, 0, this.height+(this.rounded/2)]}, notround);
         result = subtract(result, notround);
 
-        let r = ((this.thickness/2) * this.click.radiusPercent) - 0.05; 
-        let h = this.click.heightCorpus;
-        let clickDepth = (this.depth/2) - this.thickness;
-        let clickWidth = (this.width/2) - this.thickness;
-        let clickHeight = this.height - r - ((this.thickness -(2*r)) / 2);
-        
-        let cyl = cylinder( {radius: r, height: h});
-        cyl = rotate([0,degToRad(90),0], cyl);
-        
         if (this.click.active) {
+            let r = this.click.radius - 0.03;
+            let h = this.click.heightCorpus;
+            let clickDepth = (this.depth/2) - this.thickness;
+            let clickWidth = (this.width/2) - this.thickness;
+            let clickHeight = this.height - r - ((this.click.lidThickness -(2*this.click.radius)) / 2);
+            clickHeight-=0.3;
+            
+            let cyl = cylinder( {radius: r, height: h});
+            cyl = rotate([0,degToRad(90),0], cyl);
+        
             let c = center({relativeTo: [0, clickDepth, clickHeight]}, cyl);
             result = union(result, c);
             c = center({relativeTo: [0, -clickDepth, clickHeight]}, cyl);
@@ -87,6 +85,12 @@ class Box {
             result = union(result, c);
             c = center({relativeTo: [-clickWidth, 0, clickHeight]}, cyl);
             result = union(result, c);
+            /*
+            let test = cylinder( {radius: 0.5, height: 0.5});
+            test = rotate([0,0,degToRad(90)], test);
+            test = center({relativeTo: [clickWidth, 0, clickHeight+0.72]}, test);
+            result = union(result, test);
+            */
         }
 
         //Sockets
@@ -96,14 +100,17 @@ class Box {
         if (this.socketShelly?.active) {
             result = this.addSocketShelly(result);
         }
+        if (this.socketEsp?.active) {
+            result = this.addSocketEsp(result);
+        }
 
         if (this.outerScrews) {
-            let screw_width = 5;
-            let screw_depth = 5;
+            let screw_width = 7;
+            let screw_depth = 7;
             let outer_screw = roundedCuboid({size: [screw_width+this.thickness, screw_depth, this.thickness], center: [0, 0, 0], roundRadius: this.rounded});
             outer_screw = center({relativeTo: [0, 0, this.thickness/2]}, outer_screw);
 
-            let outer_screw_hole = cylinder( {radius: 1.5, height: this.thickness*3});
+            let outer_screw_hole = cylinder( {radius: 2.3, height: this.thickness*3});
             outer_screw = subtract(outer_screw, outer_screw_hole);
 
             let osHeight = (this.thickness/2);
@@ -128,6 +135,12 @@ class Box {
             });
         }
 
+        if (this.socketSingleScrewControl.active && (this.socketSingleScrewControl.screws.length>0)) {
+            this.socketSingleScrewControl.screws.forEach((screw) => {
+                if (screw.active) result = this.addScrewSocket(result, screw);
+            });
+        }
+
         return result;
     }
 
@@ -139,30 +152,34 @@ class Box {
         notround = center({relativeTo: [0, 0, -(this.rounded/2)+this.thickness]}, notround);
         result = subtract(result, notround);
     
+        let extrudeHeight = this.click.active ? this.click.lidThickness : this.thickness;
         let lid = roundedRectangle({size: [this.computed.innerWidth-this.click.lidReduce, this.computed.innerDepth-this.click.lidReduce], roundRadius: 2})
-        lid = extrudeLinear({height: this.thickness}, lid);
-        lid = center({relativeTo: [0, 0, (this.thickness/2)+this.thickness-this.rounded]}, lid);
+        lid = extrudeLinear({height: extrudeHeight}, lid);
+        lid = center({relativeTo: [0, 0, (extrudeHeight/2)+this.thickness-this.rounded]}, lid);
         result = union(result, lid);
     
-        let r = (this.thickness/2) * this.click.radiusPercent;
-        let h = this.click.heightLid;
-        let clickWidth = (this.width/2) - this.thickness - this.click.lidReduce;
-        let clickDepth = (this.depth/2) - this.thickness - this.click.lidReduce;
-        let clickHeight = (this.thickness*2) - r - ((this.thickness -(2*r)) / 2) - this.rounded;
-
-        let c;
-
-        let cyl = cylinder( {radius: r, height: h});
-        cyl = rotate([0,degToRad(90),0], cyl);
-
-        let gapcyl = cylinder( {radius: r*2, height: h});
-        gapcyl = rotate([0,degToRad(90),0], gapcyl);
-        
         if (this.click.active) {
+            if ((this.click.lidThickness-0.2) < (this.click.radius*2)) {
+                console.log("ERROR!!! lidThicknessk-0.2 ist kleiner als Click Durchmesser!");
+            }
+            let r = this.click.radius;
+            let h = this.click.heightLid;
+            let clickWidth = (this.width/2) - this.thickness - this.click.lidReduce;
+            let clickDepth = (this.depth/2) - this.thickness - this.click.lidReduce;
+            let clickHeight = (this.thickness - this.rounded) + (this.click.lidThickness/2);
+
+            let c;
+            let cyl = cylinder( {radius: r, height: h});
+            cyl = rotate([0,degToRad(90),0], cyl);
+
             //Lücken zum Abheben
-            c = center({relativeTo: [0, (this.depth/2), this.thickness-r]}, gapcyl);
+            let gapRadius = (this.thickness-this.rounded)/2;
+            let gapcyl = cylinder( {radius: gapRadius, height: h});
+            gapcyl = rotate([0,degToRad(90),0], gapcyl);
+            let gapHeight = this.thickness-this.rounded;
+            c = center({relativeTo: [0, (this.depth/2), gapHeight]}, gapcyl);
             result = subtract(result, c);
-            c = center({relativeTo: [0, -(this.depth/2), this.thickness-r]}, gapcyl);
+            c = center({relativeTo: [0, -(this.depth/2), gapHeight]}, gapcyl);
             result = subtract(result, c);
 
             //Click Lücken
@@ -175,6 +192,12 @@ class Box {
             result = subtract(result, c);
             c = center({relativeTo: [-clickWidth, 0, clickHeight]}, cyl);
             result = subtract(result, c);
+            /*
+            let test = cylinder( {radius: 0.5, height: 0.5});
+            test = rotate([0,0,degToRad(90)], test);
+            test = center({relativeTo: [0, (this.depth/2), gapHeight+0.25]}, test);
+            result = union(result, test);
+            */
         }    
 
         if (this.ventilation.active && (this.ventilation.count>0)) {
@@ -239,8 +262,8 @@ class Box {
             height+=hole.shiftHeight;
         }
         if (hole.position=="g") {
-            width=-hole.shiftDepth;
-            depth=-hole.shiftWidth;
+            width=-hole.shiftWidth;
+            depth=hole.shiftDepth;
             height=(this.thickness)/2;
         }
 
@@ -256,26 +279,41 @@ class Box {
     }
 
     //-----------------------------------------------------------------------------------------------------------------
+    addScrewSocket(result, screw) {
+        let screwSocket = this.getScrewSocket(screw.height);
+        let socket_height = this.thickness+(screw.height/2);
+
+        screwSocket = center({relativeTo: [-screw.shiftWidth, screw.shiftDepth, socket_height]}, screwSocket);
+        result = union(result, screwSocket);
+
+        return result;
+    }
+
+    //-----------------------------------------------------------------------------------------------------------------
+    getScrewSocket(height) {
+        let socket_r = this.screw.outerRadius;
+        let socket = cylinder( {radius: socket_r, height: height});
+        let socket_innen_r = this.screw.innerRadius;
+        let socket_innen = cylinder( {radius: socket_innen_r, height: height});
+        socket = subtract(socket, socket_innen);
+
+        return socket;
+    }
+
+    //-----------------------------------------------------------------------------------------------------------------
     addSocketBreadboard(result) {
         //Für generische schneidbare Platinen
         this.socket = this.socketBreadboard;
-
-        let socket_r = this.socket.outerRadius;
-        let socket_h = this.socket.height;
-        let socket = cylinder( {radius: socket_r, height: socket_h});
-        let socket_innen_r = this.socket.innerRadius;
-        let socket_innen = cylinder( {radius: socket_innen_r, height: socket_h});
-        let socket_height = (this.thickness/2)+this.thickness+(socket_h/2);
-        socket = subtract(socket, socket_innen);
-        socket = center({relativeTo: [0, 0, socket_height]}, socket);
+        let screwSocket = this.getScrewSocket(this.socket.height);
+        let socket_height = this.thickness+(this.socket.height/2);
         
         //Min 2mm Abstand vom Rand
         let socketDepth; 
         let socketWidth;
         if (this.socket.maxDepth>0) { socketDepth = this.socket.maxDepth / 2; }
-        else { socketDepth = (this.depth/2) - this.thickness - socket_r - 2; }
+        else { socketDepth = (this.depth/2) - this.thickness - this.screw.outerRadius - 2; }
         if (this.socket.maxWidth>0) { socketWidth = this.socket.maxWidth / 2; }
-        else { socketWidth = (this.width/2) - this.thickness - socket_r - 2; }
+        else { socketWidth = (this.width/2) - this.thickness - this.screw.outerRadius - 2; }
 
         //socketDepth und socketWidth auf Lochabstand der Platine normalisieren
         let lochabstand = 2.54;
@@ -284,25 +322,61 @@ class Box {
         let shiftDepth = this.socket.shiftDepth;
         let shiftWidth = this.socket.shiftWidth;
 
-        let s = center({relativeTo: [socketWidth+shiftWidth, socketDepth+shiftDepth, socket_height]}, socket);
+        let s = center({relativeTo: [socketWidth+shiftWidth, socketDepth+shiftDepth, socket_height]}, screwSocket);
         result = union(result, s);
-        s = center({relativeTo: [socketWidth+shiftWidth, -socketDepth+shiftDepth, socket_height]}, socket);
+        s = center({relativeTo: [socketWidth+shiftWidth, -socketDepth+shiftDepth, socket_height]}, screwSocket);
         result = union(result, s);
-        s = center({relativeTo: [-socketWidth+shiftWidth, -socketDepth+shiftDepth, socket_height]}, socket);
+        s = center({relativeTo: [-socketWidth+shiftWidth, -socketDepth+shiftDepth, socket_height]}, screwSocket);
         result = union(result, s);
-        s = center({relativeTo: [-socketWidth+shiftWidth, socketDepth+shiftDepth, socket_height]}, socket);
+        s = center({relativeTo: [-socketWidth+shiftWidth, socketDepth+shiftDepth, socket_height]}, screwSocket);
         result = union(result, s);
         
         return result;
     }
 
     //-----------------------------------------------------------------------------------------------------------------
+    addSocketEsp(result) {
+        //Für generische schneidbare Platinen
+        this.socket = this.socketEsp;
+        let screwSocket = this.getScrewSocket(this.socket.height);
+        let socket_height = this.thickness+(this.socket.height/2);
+        
+        let socketDepth; 
+        let socketWidth;
+
+        if (this.socket.model=="lolin_nodemcu_v3") {
+            socketWidth = 25; 
+            socketDepth = 52; 
+        }
+
+        socketDepth = socketDepth / 2;
+        socketWidth = socketWidth / 2;
+        let shiftDepth = this.socket.shiftDepth;
+        let shiftWidth = this.socket.shiftWidth;
+        
+        if (this.socket.rotate) {
+            let h=socketDepth; socketDepth=socketWidth; socketWidth=h;
+        }
+
+        let s = center({relativeTo: [socketWidth+shiftWidth, socketDepth+shiftDepth, socket_height]}, screwSocket);
+        result = union(result, s);
+        s = center({relativeTo: [socketWidth+shiftWidth, -socketDepth+shiftDepth, socket_height]}, screwSocket);
+        result = union(result, s);
+        s = center({relativeTo: [-socketWidth+shiftWidth, -socketDepth+shiftDepth, socket_height]}, screwSocket);
+        result = union(result, s);
+        s = center({relativeTo: [-socketWidth+shiftWidth, socketDepth+shiftDepth, socket_height]}, screwSocket);
+        result = union(result, s);
+        
+        return result;
+    }
+    
+    //-----------------------------------------------------------------------------------------------------------------
     addSocketShelly(result) {
         this.socket = this.socketShelly;
 
         let socketWidth = 1;
         let socketDepth = 1;
-        let height = 4;
+        let height = 5;
         let socketThickness = 1;
 
         if (this.socket.model=="rgb") {

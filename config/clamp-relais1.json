@@ -1,0 +1,11 @@
+{
+    "name": "Klemme 1-fach Relais Lochraster 2.54mm",
+    "techName": "clamp-relais1",
+    "type": "clamp",
+    "modelData": {
+        "width": 17.8, //kurze Seite innen 17.4
+        "depth": 43.6, //lange Seite innen 43.2
+        "clickHeight": 3,  //Höhe von Boden bis Clickanfang innen 2.8,
+        "clickRadius": 0.5
+    }
+}

@@ -4,10 +4,8 @@
     "type": "box",
     "modelData": {
         "width": 50, //kurze Seite
-        "depth": 44, //lange Seite
-        //"width": 50, //kurze Seite
-        //"depth": 80, //lange Seite
-        "height": 5.5,
+        "depth": 80, //lange Seite
+        "height": 2.5,
         "thickness": 1.5, 
         "rounded": 0.3,
         "outerScrews": false,
@@ -21,33 +19,42 @@
         "socketBreadboard": {
             //Lochraster (Breadboard) 2.54mm Abstand
             "active": false,
-            "height": 5,
-            "outerRadius": 2,
-            "innerRadius": 1,
+            "height": 6,
             "maxWidth": 0,  //0=max. Width
-            "maxDepth": 20,  //0=max. Depth
+            "maxDepth": 0,  //0=max. Depth
             "shiftWidth": 0,
-            "shiftDepth": -20
+            "shiftDepth": 0
+        },
+        "socketEsp": {
+            "active": true,
+            "model": "lolin_nodemcu_v3",
+            "height": 15,
+            "rotate": false,
+            "shiftWidth": 0,
+            "shiftDepth": 0
         },
         "socketShelly": {
-            "active": true,
+            "active": false,
             "model": "rgb",
             "shiftWidth": 0,
             "shiftDepth": 8
         },
-        "click": {
+        "socketSingleScrewControl": {
             "active": false,
-            //Diese Werte am Besten nicht verändern!
-            "lidReduce": 0.3, //Bei 2 Thickness => 0.3 Press / 0.4 minimal spiel aber klickt gut /// Bei 1.5 Thickness.
-            "radiusPercent": 0.5, //Prozent von Thickness - 0.4 Bei 2 Thickness / 0.5 bei 1.5 Thickness
-            "heightCorpus": 9,
-            "heightLid": 10
+            "screws": [
+                {
+                    "active": true,
+                    "height": 8.5,
+                    "shiftWidth": 14,
+                    "shiftDepth": 10
+                }
+            ]
         },
         "holeControl": {
             "active": true,
             "holes": [
                 {
-                    "active": true,
+                    "active": false,
                     "position": "f",   //f=front / b=back / l=left / r=right / g=round
                     "shape": "c", //c=circle / r=rectangle
                     "radius": 1.5,
@@ -56,7 +63,7 @@
                     "shiftHeight": 0
                 },
                 {
-                    "active": true,
+                    "active": false,
                     "position": "l" , //f=front / b=back / l=left / r=right / g=round
                     "shape": "r", //c=circle / r=rectangle
                     "width": 8,
@@ -71,10 +78,24 @@
                     "shape": "c", //c=circle / r=rectangle
                     "radius": 2,
                     //Shift vom Mittelpunkt
-                    "shiftWidth": 0,
-                    "shiftDepth": 0
+                    "shiftWidth": -5,
+                    "shiftDepth": 10
                 }
             ]
+        },
+        "screw": {
+            //Diese Werte am Besten nicht verändern! Definiert den Schraublöcher
+            "outerRadius": 2.5,
+            "innerRadius": 1.5
+        },
+        "click": {
+            "active": false,
+            //Diese Werte am Besten nicht verändern! Definiert den Click Cylinder
+            "lidReduce": 0.3,     //0.3 Press / 0.4 minimal spiel aber klickt gut
+            "lidThickness": 2,
+            "radius": 0.5,
+            "heightCorpus": 9,
+            "heightLid": 10
         }
     }
 }

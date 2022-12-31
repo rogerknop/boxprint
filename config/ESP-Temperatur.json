@@ -1,19 +1,19 @@
 {
-    "name": "RGB Shelly",
-    "techName": "rgbshelly",
+    "name": "ESP Temperatur",
+    "techName": "esptemp",
     "type": "box",
     "modelData": {
-        "width": 50, //kurze Seite
-        "depth": 60, //lange Seite
-        "height": 19,
+        "width": 35, //kurze Seite
+        "depth": 70, //lange Seite
+        "height": 25,
         "thickness": 1.5, 
         "rounded": 0.3,
-        "outerScrews": true,
+        "outerScrews": false,
         "ventilation": {
             "active": true,
             "count": 5,
             "lengthPercent": 0.8,
-            "width": 1.3,
+            "width": 1.5,
             "shift" : 0
         },
         "socketBreadboard": {
@@ -25,11 +25,13 @@
             "shiftWidth": 0,
             "shiftDepth": -20
         },
-        "socketShelly": {
+        "socketEsp": {
             "active": true,
-            "model": "rgb",
+            "model": "lolin_nodemcu_v3",
+            "height": 15,
+            "rotate": false,
             "shiftWidth": 0,
-            "shiftDepth": 8
+            "shiftDepth": 2
         },
         "socketSingleScrewControl": {
             "active": false,
@@ -51,16 +53,17 @@
                     "shape": "r",      //c=circle / r=rectangle
                     "width": 3.5,
                     "depth": 5,
-                    "shiftWidth": 14,
-                    "shiftHeight": 6.25
+                    "shiftWidth": 10,
+                    "shiftHeight": 9.25
                 },
                 {
                     "active": true,
-                    "position": "l" , //f=front / b=back / l=left / r=right / g=round
-                    "shape": "c",     //c=circle / r=rectangle
-                    "radius": 4.3,
-                    "shiftWidth": -19,
-                    "shiftHeight": 0
+                    "position": "f" , //f=front / b=back / l=left / r=right / g=round
+                    "shape": "r",      //c=circle / r=rectangle
+                    "width": 10,
+                    "depth": 8,
+                    "shiftWidth": 0,
+                    "shiftHeight": 5
                 }
             ]
         },

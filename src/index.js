@@ -1,20 +1,6 @@
 const Core = require('./core.js');
 const Box = require('./box.js');
-
-/*
-rok-todo:
-
-ToDo:
-- git repo erstellen
-
-Features:
-- Schrauben Ja/Nein - cyl bis Deckel Achtung! Lochraster Sockel müssen dann evl. Platz lassen
-  . Deckel
-  . Boden
-- Schrauben aussen ja/nein - aussen an den 4 ecken ringe
-- Array für Löcher
-
-*/
+const Clamp = require('./clamp.js');
 
 function main () {
     let core = new Core();
@@ -41,6 +27,19 @@ function main () {
 
       box.export();
     }
+
+    if (core.config.type == "clamp") {
+      let clamp = new Clamp(core, core.config.modelData);
+      
+      if (core.config.extensionAvailable) {
+        try {
+          core.config.extension.processEnd(box);
+        } catch (e) {}
+      }
+
+      clamp.export();
+    }
+
 }
 
 main();
