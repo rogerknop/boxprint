@@ -29,6 +29,7 @@ class Box {
     ventilation = {};
 
     computed = {};
+    logMeasure = [];
 
     //-----------------------------------------------------------------------------------------------------------------
     constructor(core, params) {
@@ -45,6 +46,10 @@ class Box {
         this.computed.innerDepth = this.depth-(this.thickness*2);
         this.computed.innerHeight = this.height-this.thickness;
         this.computed.innerCenterHeight = (this.computed.innerHeight/2)+this.thickness;
+
+        this.addLog(1, "  - Breite innen: " + this.computed.innerWidth);
+        this.addLog(2, "  - Tiefe innen: " + this.computed.innerDepth);
+        this.addLog(3, "  - Höhe innen offen: " + this.computed.innerHeight);
 
         let result = roundedCuboid({size: [this.width, this.depth, this.height+this.rounded], center: [0, 0, ((this.height+this.rounded)/2)], roundRadius: this.rounded});
         result = subtract(result,  roundedCuboid({size: [this.computed.innerWidth, this.computed.innerDepth, this.height+this.rounded], center: [0, 0, ((this.height+this.rounded)/2)+this.thickness], roundRadius: this.rounded}));
@@ -75,6 +80,8 @@ class Box {
             
             let cyl = cylinder( {radius: r, height: h});
             cyl = rotate([0,degToRad(90),0], cyl);
+
+            this.addLog(10, "  - Untere Klick Kante bis Boden: " + (clickHeight-r).toFixed(2));
         
             let c = center({relativeTo: [0, clickDepth, clickHeight]}, cyl);
             result = union(result, c);
@@ -130,14 +137,14 @@ class Box {
         }
 
         if (this.holeControl.active && (this.holeControl.holes.length>0)) {
-            this.holeControl.holes.forEach((hole) => {
-                if (hole.active) result = this.addHole(result, hole);
+            this.holeControl.holes.forEach((hole, idx) => {
+                if (hole.active) result = this.addHole(result, hole, idx);
             });
         }
 
         if (this.socketSingleScrewControl.active && (this.socketSingleScrewControl.screws.length>0)) {
-            this.socketSingleScrewControl.screws.forEach((screw) => {
-                if (screw.active) result = this.addScrewSocket(result, screw);
+            this.socketSingleScrewControl.screws.forEach((screw, idx) => {
+                if (screw.active) result = this.addScrewSocket(result, screw, idx);
             });
         }
 
@@ -157,6 +164,10 @@ class Box {
         lid = extrudeLinear({height: extrudeHeight}, lid);
         lid = center({relativeTo: [0, 0, (extrudeHeight/2)+this.thickness-this.rounded]}, lid);
         result = union(result, lid);
+
+        this.computed.heightLidInsideCorpus = extrudeHeight;
+        this.addLog(4, "  - Höhe innen geschlossen: " + (this.computed.innerHeight - this.computed.heightLidInsideCorpus));
+        this.addLog(5, "  - Höhe Deckel im Korpus: " + this.computed.heightLidInsideCorpus);
     
         if (this.click.active) {
             if ((this.click.lidThickness-0.2) < (this.click.radius*2)) {
@@ -220,13 +231,22 @@ class Box {
     }
 
     //-----------------------------------------------------------------------------------------------------------------
-    addHole(result, hole) {
+    addHole(result, hole, idx) {
+        let logNr = 100 + ((idx-1) * 10);
+        let lochHoehe=0;
+        let lochBreite=0;
         let holeShape;
         if (hole.shape=="c") {
             holeShape = cylinder( {radius: hole.radius, height: this.thickness*1.1});
+            this.addLog(logNr+1, "  - Loch Kreis mit Radius " + hole.radius);
+            lochBreite = (hole.radius*2);
+            lochHoehe  = (hole.radius*2);
         }
         if (hole.shape=="r") {
             holeShape = roundedCuboid({size: [hole.width, hole.depth, this.thickness*1.5], roundRadius: 0.1});
+            this.addLog(logNr+1, "  - Loch Rechteck " + hole.width + "x" + hole.depth);
+            lochBreite = hole.width;
+            lochHoehe  = hole.depth;
         }
 
         let width=0;
@@ -235,17 +255,26 @@ class Box {
         let rotateX=0;
         let rotateY=0;
 
+        let abstandWandMittig = 0;
+        let abstandMitte = 0;
+
         if (hole.position=="b") {
             rotateX=90;
             width+=hole.shiftWidth;
             depth=-((this.computed.innerDepth/2)+(this.thickness/2));
             height+=hole.shiftHeight;
+            abstandMitte = width;
+            abstandWandMittig = this.computed.innerWidth - lochBreite;
+            this.addLog(logNr+2, "    . Position Hinten");
         }
         if (hole.position=="f") {
             rotateX=90;
             width-=hole.shiftWidth;
             depth=((this.computed.innerDepth/2)+(this.thickness/2));
             height+=hole.shiftHeight;
+            abstandMitte = width;
+            abstandWandMittig = this.computed.innerWidth - lochBreite;
+            this.addLog(logNr+2, "    . Position Vorne");
         }
         if (hole.position=="r") {
             rotateX=90;
@@ -253,6 +282,9 @@ class Box {
             depth-=hole.shiftWidth;
             width=-((this.computed.innerWidth/2)+(this.thickness/2));
             height+=hole.shiftHeight;
+            abstandMitte = depth;
+            abstandWandMittig = this.computed.innerDepth - lochBreite;
+            this.addLog(logNr+2, "    . Position Rechts");
         }
         if (hole.position=="l") {
             rotateX=90;
@@ -260,15 +292,37 @@ class Box {
             depth+=hole.shiftWidth;
             width=((this.computed.innerWidth/2)+(this.thickness/2));
             height+=hole.shiftHeight;
+            abstandMitte = depth;
+            abstandWandMittig = this.computed.innerDepth - lochBreite;
+            this.addLog(logNr+2, "    . Position Links");
         }
         if (hole.position=="g") {
             width=-hole.shiftWidth;
             depth=hole.shiftDepth;
             height=(this.thickness)/2;
+            abstandMitte = width;
+            abstandWandMittig = this.computed.innerWidth - lochBreite;
+            this.addLog(logNr+2, "    . Position Boden");
         }
 
         holeShape = rotate([degToRad(rotateX), 0, degToRad(rotateY)], holeShape);
         holeShape = center({relativeTo: [width, depth, height]}, holeShape);
+
+        if (hole.position!="g") {
+            let abstandHoehe = height - this.thickness;
+            this.addLog(logNr+3, "    . Abstand Boden " + (abstandHoehe - (lochHoehe/2)).toFixed(2));
+            this.addLog(logNr+4, "    . Abstand Rand oben " + (this.computed.innerHeight - (abstandHoehe + (lochHoehe/2))).toFixed(2));
+            this.addLog(logNr+5, "    . Abstand Wand 1 " + ((abstandWandMittig/2) - abstandMitte).toFixed(2));
+            this.addLog(logNr+6, "    . Abstand Wand 2 " + ((abstandWandMittig/2) + abstandMitte).toFixed(2));
+        }
+        else {
+            this.addLog(logNr+3, "    . Abstand Wand 1 " + ((abstandWandMittig/2) - abstandMitte).toFixed(2));
+            this.addLog(logNr+4, "    . Abstand Wand 2 " + ((abstandWandMittig/2) + abstandMitte).toFixed(2));
+            abstandMitte = depth;
+            abstandWandMittig = this.computed.innerDepth - lochBreite;
+            this.addLog(logNr+5, "    . Abstand Wand 3 " + ((abstandWandMittig/2) - abstandMitte));
+            this.addLog(logNr+6, "    . Abstand Wand 4 " + ((abstandWandMittig/2) + abstandMitte));
+        }
 
         if (holeShape) {
             //result = union(result, holeShape);
@@ -321,6 +375,9 @@ class Box {
         socketWidth = (Math.floor( (socketWidth*2) / lochabstand) * lochabstand) / 2;
         let shiftDepth = this.socket.shiftDepth;
         let shiftWidth = this.socket.shiftWidth;
+
+        this.addLog(20, "  - Lochraster Lochabstand Breite " + (socketWidth * 2));
+        this.addLog(20, "  - Lochraster Lochabstand Tiefe " + (socketDepth * 2));
 
         let s = center({relativeTo: [socketWidth+shiftWidth, socketDepth+shiftDepth, socket_height]}, screwSocket);
         result = union(result, s);
@@ -392,6 +449,27 @@ class Box {
         //let center = measureCenter(shellybox)
 
         return result;
+    }
+
+    //-----------------------------------------------------------------------------------------------------------------
+    addLog(sortnr, msg) {
+        this.logMeasure.push({
+            sortnr: sortnr,
+            msg: msg
+        })
+    }
+
+    //-----------------------------------------------------------------------------------------------------------------
+    logMeasurements() {
+        console.log("---------------------------------------------------------");
+        console.log("Box Maße:");
+        this.logMeasure.sort(function(a, b) {
+            return a.sortnr - b.sortnr;
+        });
+        this.logMeasure.forEach((el) => {
+            console.log(el.msg);
+        });
+        console.log("---------------------------------------------------------");
     }
 
     //-----------------------------------------------------------------------------------------------------------------

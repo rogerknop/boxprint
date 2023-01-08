@@ -25,6 +25,7 @@ function main () {
         } catch (e) {}
       }
 
+      box.logMeasurements();
       box.export();
     }
 
