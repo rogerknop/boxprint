@@ -238,13 +238,13 @@ class Box {
         let holeShape;
         if (hole.shape=="c") {
             holeShape = cylinder( {radius: hole.radius, height: this.thickness*1.1});
-            this.addLog(logNr+1, "  - Loch Kreis mit Radius " + hole.radius);
+            this.addLog(logNr+1, "  - Loch Kreis mit Radius: " + hole.radius);
             lochBreite = (hole.radius*2);
             lochHoehe  = (hole.radius*2);
         }
         if (hole.shape=="r") {
             holeShape = roundedCuboid({size: [hole.width, hole.depth, this.thickness*1.5], roundRadius: 0.1});
-            this.addLog(logNr+1, "  - Loch Rechteck " + hole.width + "x" + hole.depth);
+            this.addLog(logNr+1, "  - Loch Rechteck: " + hole.width + "x" + hole.depth);
             lochBreite = hole.width;
             lochHoehe  = hole.depth;
         }
@@ -310,18 +310,18 @@ class Box {
 
         if (hole.position!="g") {
             let abstandHoehe = height - this.thickness;
-            this.addLog(logNr+3, "    . Abstand Boden " + (abstandHoehe - (lochHoehe/2)).toFixed(2));
-            this.addLog(logNr+4, "    . Abstand Rand oben " + (this.computed.innerHeight - (abstandHoehe + (lochHoehe/2))).toFixed(2));
-            this.addLog(logNr+5, "    . Abstand Wand 1 " + ((abstandWandMittig/2) - abstandMitte).toFixed(2));
-            this.addLog(logNr+6, "    . Abstand Wand 2 " + ((abstandWandMittig/2) + abstandMitte).toFixed(2));
+            this.addLog(logNr+3, "    . Abstand Boden: " + (abstandHoehe - (lochHoehe/2)).toFixed(2));
+            this.addLog(logNr+4, "    . Abstand Rand oben: " + (this.computed.innerHeight - (abstandHoehe + (lochHoehe/2))).toFixed(2));
+            this.addLog(logNr+5, "    . Abstand Wand 1: " + ((abstandWandMittig/2) - abstandMitte).toFixed(2));
+            this.addLog(logNr+6, "    . Abstand Wand 2: " + ((abstandWandMittig/2) + abstandMitte).toFixed(2));
         }
         else {
-            this.addLog(logNr+3, "    . Abstand Wand 1 " + ((abstandWandMittig/2) - abstandMitte).toFixed(2));
-            this.addLog(logNr+4, "    . Abstand Wand 2 " + ((abstandWandMittig/2) + abstandMitte).toFixed(2));
+            this.addLog(logNr+3, "    . Abstand Wand 1: " + ((abstandWandMittig/2) - abstandMitte).toFixed(2));
+            this.addLog(logNr+4, "    . Abstand Wand 2: " + ((abstandWandMittig/2) + abstandMitte).toFixed(2));
             abstandMitte = depth;
             abstandWandMittig = this.computed.innerDepth - lochBreite;
-            this.addLog(logNr+5, "    . Abstand Wand 3 " + ((abstandWandMittig/2) - abstandMitte));
-            this.addLog(logNr+6, "    . Abstand Wand 4 " + ((abstandWandMittig/2) + abstandMitte));
+            this.addLog(logNr+5, "    . Abstand Wand 3: " + ((abstandWandMittig/2) - abstandMitte));
+            this.addLog(logNr+6, "    . Abstand Wand 4: " + ((abstandWandMittig/2) + abstandMitte));
         }
 
         if (holeShape) {
