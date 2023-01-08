@@ -29,6 +29,8 @@ Ein Beispiel ist: extension/defaultbox.js
 
 Die obj Dateien im Export Verzeichnis können direkt in einen Slicer (z.B. Cura) geladen werden für die 3D Print Weiterverarbeitung.
 
+Zur einfacheren Erstellung werden berechnete Innenmaße und Abstände ausgegeben. Dies ist sehr hilfreich bei der Konfiguration neuer Boxen und ersparte Testdrucke.
+
 Die Schraublöcher sind getestet mit 2,9er Blechschrauben.
 
 Für den Typ ***box*** werden folgende Features unterstützt:
