@@ -54,9 +54,9 @@ class Box {
         this.computed.innerHeight = this.height-this.thickness;
         this.computed.innerCenterHeight = (this.computed.innerHeight/2)+this.thickness;
 
-        this.addLog(1, "  - Breite innen: " + this.computed.innerWidth);
-        this.addLog(2, "  - Tiefe innen: " + this.computed.innerDepth);
-        this.addLog(3, "  - Höhe innen offen: " + this.computed.innerHeight);
+        this.addLog(1, "  - Breite innen: " + this.computed.innerWidth.toFixed(2));
+        this.addLog(2, "  - Tiefe innen: " + this.computed.innerDepth.toFixed(2));
+        this.addLog(3, "  - Höhe innen offen: " + this.computed.innerHeight.toFixed(2));
 
         let result = roundedCuboid({size: [this.width, this.depth, this.height+this.rounded], center: [0, 0, ((this.height+this.rounded)/2)], roundRadius: this.rounded});
         result = subtract(result,  roundedCuboid({size: [this.computed.innerWidth, this.computed.innerDepth, this.height+this.rounded], center: [0, 0, ((this.height+this.rounded)/2)+this.thickness], roundRadius: this.rounded}));
@@ -78,12 +78,12 @@ class Box {
         result = subtract(result, notround);
 
         if (this.click.active) {
-            let r = this.click.radius - 0.03;
+            let r = this.click.radius - 0.05;
             let h = this.click.heightCorpus;
             let clickDepth = (this.depth/2) - this.thickness;
             let clickWidth = (this.width/2) - this.thickness;
             let clickHeight = this.height - r - ((this.click.lidThickness -(2*this.click.radius)) / 2);
-            clickHeight-=0.3;
+            clickHeight-=0.5;
             
             let cyl = cylinder( {radius: r, height: h});
             cyl = rotate([0,degToRad(90),0], cyl);
@@ -174,9 +174,9 @@ class Box {
         result = union(result, lid);
 
         this.computed.heightLidInsideCorpus = extrudeHeight;
-        this.addLog(4, "  - Höhe innen geschlossen: " + (this.computed.innerHeight - this.computed.heightLidInsideCorpus));
-        this.addLog(5, "  - Höhe Deckel gesamt: " + this.computed.lid_thickness_complete);
-        this.addLog(6, "  - Höhe Deckel im Korpus: " + this.computed.heightLidInsideCorpus);
+        this.addLog(4, "  - Höhe innen geschlossen: " + (this.computed.innerHeight - this.computed.heightLidInsideCorpus).toFixed(2));
+        this.addLog(5, "  - Höhe Deckel gesamt: " + this.computed.lid_thickness_complete.toFixed(2));
+        this.addLog(6, "  - Höhe Deckel im Korpus: " + this.computed.heightLidInsideCorpus.toFixed(2));
     
         if (this.click.active) {
             if ((this.click.lidThickness-0.2) < (this.click.radius*2)) {
@@ -331,8 +331,8 @@ class Box {
             this.addLog(logNr+4, "    . Abstand Wand 2: " + ((abstandWandMittig/2) + abstandMitte).toFixed(2));
             abstandMitte = depth;
             abstandWandMittig = this.computed.innerDepth - lochBreite;
-            this.addLog(logNr+5, "    . Abstand Wand 3: " + ((abstandWandMittig/2) - abstandMitte));
-            this.addLog(logNr+6, "    . Abstand Wand 4: " + ((abstandWandMittig/2) + abstandMitte));
+            this.addLog(logNr+5, "    . Abstand Wand 3: " + ((abstandWandMittig/2) - abstandMitte).toFixed(2));
+            this.addLog(logNr+6, "    . Abstand Wand 4: " + ((abstandWandMittig/2) + abstandMitte).toFixed(2));
         }
 
         if (holeShape) {
@@ -387,8 +387,8 @@ class Box {
         let shiftDepth = this.socket.shiftDepth;
         let shiftWidth = this.socket.shiftWidth;
 
-        this.addLog(20, "  - Lochraster Lochabstand Breite " + (socketWidth * 2));
-        this.addLog(20, "  - Lochraster Lochabstand Tiefe " + (socketDepth * 2));
+        this.addLog(20, "  - Lochraster Lochabstand Breite " + (socketWidth * 2).toFixed(2));
+        this.addLog(20, "  - Lochraster Lochabstand Tiefe " + (socketDepth * 2).toFixed(2));
 
         let s = center({relativeTo: [socketWidth+shiftWidth, socketDepth+shiftDepth, socket_height]}, screwSocket);
         result = union(result, s);
@@ -486,11 +486,12 @@ class Box {
         // - Die länger Seite ist relvant. Je größer die Box je größer muss der Click sein, da die Seiten nicht starr sind
         // - Testreihe:
         //   . Max Seite 50 => Radius 0.5 (Minimum)
-        //   . Max Seite 80 => Radius 0.8 usw.
-        //   => radius = longSide / 100
+        //   . Max Seite 90 => Radius 0.82 usw.
+        //   => radius = longSide / 110
         let longSide = Math.max(this.width, this.depth);
-        this.click.radius = longSide / 100;
+        this.click.radius = longSide / 110;
         this.click.radius = this.click.radius.toFixed(2)*1;
+        if (this.click.radius < 0.5) { this.click.radius = 0.5; }
 
         // lidThickness kann man berechnen anhand des Click Radius + Fester Rand obendrüber und drunter
         this.click.lidThickness = (this.click.radius * 2) + (0.4 * 2);
