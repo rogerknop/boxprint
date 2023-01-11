@@ -16,6 +16,8 @@ const { measureDimensions, measureCenter } = jscad.measurements;
 
 const segmentToPath = (segment) => { return path2.fromPoints({close: false}, segment) };
 
+const clear = require('console-clear');
+
 class Box {
     core;
 
@@ -28,6 +30,9 @@ class Box {
     click = {}; 
     ventilation = {};
 
+    // Der innere Teil vom Deckel im Korpus ist minimal kleiner in Width und Depth
+    lidReduce = 0.2;
+
     computed = {};
     logMeasure = [];
 
@@ -35,6 +40,8 @@ class Box {
     constructor(core, params) {
         this.core = core;
         Object.assign(this, params);
+
+        this.computeClickValues();
 
         this.computed.corpus = this.corpus();
         this.computed.lid    = this.lid();
@@ -160,23 +167,26 @@ class Box {
         result = subtract(result, notround);
     
         let extrudeHeight = this.click.active ? this.click.lidThickness : this.thickness;
-        let lid = roundedRectangle({size: [this.computed.innerWidth-this.click.lidReduce, this.computed.innerDepth-this.click.lidReduce], roundRadius: 2})
+        this.computed.lid_thickness_complete = extrudeHeight + this.thickness - this.rounded;
+        let lid = roundedRectangle({size: [this.computed.innerWidth-this.lidReduce, this.computed.innerDepth-this.lidReduce], roundRadius: 2})
         lid = extrudeLinear({height: extrudeHeight}, lid);
         lid = center({relativeTo: [0, 0, (extrudeHeight/2)+this.thickness-this.rounded]}, lid);
         result = union(result, lid);
 
         this.computed.heightLidInsideCorpus = extrudeHeight;
         this.addLog(4, "  - Höhe innen geschlossen: " + (this.computed.innerHeight - this.computed.heightLidInsideCorpus));
-        this.addLog(5, "  - Höhe Deckel im Korpus: " + this.computed.heightLidInsideCorpus);
+        this.addLog(5, "  - Höhe Deckel gesamt: " + this.computed.lid_thickness_complete);
+        this.addLog(6, "  - Höhe Deckel im Korpus: " + this.computed.heightLidInsideCorpus);
     
         if (this.click.active) {
             if ((this.click.lidThickness-0.2) < (this.click.radius*2)) {
                 console.log("ERROR!!! lidThicknessk-0.2 ist kleiner als Click Durchmesser!");
             }
+            this.addLog(7, "  - Klick Radius: " + this.click.radius);
             let r = this.click.radius;
             let h = this.click.heightLid;
-            let clickWidth = (this.width/2) - this.thickness - this.click.lidReduce;
-            let clickDepth = (this.depth/2) - this.thickness - this.click.lidReduce;
+            let clickWidth = (this.width/2) - this.thickness - this.lidReduce;
+            let clickDepth = (this.depth/2) - this.thickness - this.lidReduce;
             let clickHeight = (this.thickness - this.rounded) + (this.click.lidThickness/2);
 
             let c;
@@ -214,15 +224,16 @@ class Box {
         if (this.ventilation.active && (this.ventilation.count>0)) {
             let ventilationWidth = this.ventilation.width;
             let ventilationShift = this.ventilation.shift || 0;
-            let availDepth = this.computed.innerDepth-(this.click.lidReduce*2);
-            let availWidth = this.computed.innerWidth-(this.click.lidReduce*2);
+            let availDepth = this.computed.innerDepth-(this.lidReduce*2);
+            let availWidth = this.computed.innerWidth-(this.lidReduce*2);
             let ventilationLength = availDepth * this.ventilation.lengthPercent;
             let gap = (availWidth / (this.ventilation.count + 1));
             let currPos = -(availWidth / 2) ;
-            let gapCuboid = cuboid({size: [ventilationWidth, ventilationLength, this.thickness * 5]});
+            let gapHeight = this.computed.lid_thickness_complete;
+            let gapCuboid = cuboid({size: [ventilationWidth, ventilationLength, gapHeight+1]});
             for (let i = 1; i<=this.ventilation.count; i++) {
                 currPos += gap;
-                gapCuboid = center({relativeTo: [currPos, ventilationShift, 0]}, gapCuboid);
+                gapCuboid = center({relativeTo: [currPos, ventilationShift, gapHeight/2]}, gapCuboid);
                 result = subtract(result, gapCuboid);
             }
         }
@@ -452,6 +463,41 @@ class Box {
     }
 
     //-----------------------------------------------------------------------------------------------------------------
+    computeClickValues() {
+        if (this.click && this.click.hasOwnProperty('compute') && !this.click.compute) {
+            return;
+        }
+
+        if (!this.click || (typeof(this.click)!=="object")) { this.click = {active: true}; }
+
+        // Der innere Teil vom Deckel im Korpus muss gross genug für die Clicks sein
+        this.click.lidThickness = 2;
+        
+        // Radius des Click Cylinders        
+        this.click.radius = 0.5;
+
+        // Länge des Click Cylinders am Korpus
+        this.click.heightCorpus = 9;
+
+        // Länge der Click Cylinder Einbuchtung im Deckel
+        this.click.heightLid = 10;
+
+        // Click Radius sollte mit Größe der Box größer werden
+        // - Die länger Seite ist relvant. Je größer die Box je größer muss der Click sein, da die Seiten nicht starr sind
+        // - Testreihe:
+        //   . Max Seite 50 => Radius 0.5 (Minimum)
+        //   . Max Seite 80 => Radius 0.8 usw.
+        //   => radius = longSide / 100
+        let longSide = Math.max(this.width, this.depth);
+        this.click.radius = longSide / 100;
+        this.click.radius = this.click.radius.toFixed(2)*1;
+
+        // lidThickness kann man berechnen anhand des Click Radius + Fester Rand obendrüber und drunter
+        this.click.lidThickness = (this.click.radius * 2) + (0.4 * 2);
+        this.click.lidThickness = this.click.lidThickness.toFixed(2)*1;
+    }
+
+    //-----------------------------------------------------------------------------------------------------------------
     addLog(sortnr, msg) {
         this.logMeasure.push({
             sortnr: sortnr,
@@ -461,6 +507,7 @@ class Box {
 
     //-----------------------------------------------------------------------------------------------------------------
     logMeasurements() {
+        clear();
         console.log("---------------------------------------------------------");
         console.log("Box Maße:");
         this.logMeasure.sort(function(a, b) {

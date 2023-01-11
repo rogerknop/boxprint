@@ -95,10 +95,11 @@
             "outerRadius": 2.5,
             "innerRadius": 1.5
         },
+        //"click": true, => Dann wird immer berechnet / false=kein Click
         "click": {
             "active": true,
+            "compute": true,
             //Diese Werte am Besten nicht verändern! Definiert den Click Cylinder
-            "lidReduce": 0.3,     //0.3 Press / 0.4 minimal spiel aber klickt gut
             "lidThickness": 2,
             "radius": 0.5,
             "heightCorpus": 9,
