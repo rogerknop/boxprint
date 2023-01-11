@@ -34,7 +34,7 @@ Zur einfacheren Erstellung werden berechnete Innenmaße und Abstände ausgegeben
 Die Schraublöcher sind getestet mit 2,9er Blechschrauben.
 
 Für den Typ ***box*** werden folgende Features unterstützt:
-* Höhe, Breite, Tiefe mit Klick Mechanismus
+* Höhe, Breite, Tiefe mit Klick Mechanismus (eigene Werte oder automatisch berechnet)
 * Sockets zum Schrauben für:
   * ESP Lolin NodeMcu V3
   * Shelly RGB
