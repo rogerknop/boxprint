@@ -88,11 +88,10 @@
             "outerRadius": 2.5,
             "innerRadius": 1.5
         },
-        "click": true, // => Dann wird immer berechnet / false=kein Click
-        "clickx": {
+        "clickx": true, // => Dann wird immer berechnet / false=kein Click
+        "click": {
             "active": true,
-            "compute": false, // So kann man die Werte überschreiben
-            //Diese Werte am Besten nicht verändern! Definiert den Click Cylinder
+            "compute": true, // So kann man die Werte überschreiben
             "lidThickness": 2,
             "radius": 0.5,
             "heightCorpus": 9,

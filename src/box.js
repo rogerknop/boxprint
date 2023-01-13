@@ -176,13 +176,12 @@ class Box {
         this.computed.heightLidInsideCorpus = extrudeHeight;
         this.addLog(4, "  - Höhe innen geschlossen: " + (this.computed.innerHeight - this.computed.heightLidInsideCorpus).toFixed(2));
         this.addLog(5, "  - Höhe Deckel gesamt: " + this.computed.lid_thickness_complete.toFixed(2));
-        this.addLog(6, "  - Höhe Deckel im Korpus: " + this.computed.heightLidInsideCorpus.toFixed(2));
+        //this.addLog(6, "  - Höhe Deckel im Korpus: " + this.computed.heightLidInsideCorpus.toFixed(2));
     
         if (this.click.active) {
             if ((this.click.lidThickness-0.2) < (this.click.radius*2)) {
                 console.log("ERROR!!! lidThicknessk-0.2 ist kleiner als Click Durchmesser!");
             }
-            this.addLog(7, "  - Klick Radius: " + this.click.radius);
             let r = this.click.radius;
             let h = this.click.heightLid;
             let clickWidth = (this.width/2) - this.thickness - this.lidReduce;
@@ -464,11 +463,19 @@ class Box {
 
     //-----------------------------------------------------------------------------------------------------------------
     computeClickValues() {
+        this.addLog(20, "  - Klick Werte: automatisch = " + this.click.compute);
+
         if (this.click && this.click.hasOwnProperty('compute') && !this.click.compute) {
+            this.addLog(21, "    . Radius (radius): " + this.click.radius);
+            this.addLog(22, "    . Höhe innerer Teil vom Deckel im Korpus (lidThickness):  " + this.click.lidThickness);
+            this.addLog(23, "    . Zylinderlänge im Korpus (heightCorpus): " + this.click.heightCorpus);
+            this.addLog(24, "    . Zylinderlänge im Deckel (heightLid): " + this.click.heightLid);
             return;
         }
-
+        
         if (!this.click || (typeof(this.click)!=="object")) { this.click = {active: true}; }
+        
+        this.click.compute = true;
 
         // Der innere Teil vom Deckel im Korpus muss gross genug für die Clicks sein
         this.click.lidThickness = 2;
@@ -486,16 +493,25 @@ class Box {
         // - Die länger Seite ist relvant. Je größer die Box je größer muss der Click sein, da die Seiten nicht starr sind
         // - Testreihe:
         //   . Max Seite 50 => Radius 0.5 (Minimum)
-        //   . Max Seite 90 => Radius 0.82 usw.
+        //   . Max Seite 90 => Radius 0.68 usw.
         //   => radius = longSide / 110
         let longSide = Math.max(this.width, this.depth);
-        this.click.radius = longSide / 110;
-        this.click.radius = this.click.radius.toFixed(2)*1;
-        if (this.click.radius < 0.5) { this.click.radius = 0.5; }
+        if (longSide > 50) {
+            this.click.radius = 
+              0.5 + // Minimum
+              ((longSide - 50) * 0.0045);
+              if (this.click.radius < 0.5) { this.click.radius = 0.5; }
+              this.click.radius = this.click.radius.toFixed(2)*1;
+        }
 
         // lidThickness kann man berechnen anhand des Click Radius + Fester Rand obendrüber und drunter
         this.click.lidThickness = (this.click.radius * 2) + (0.4 * 2);
         this.click.lidThickness = this.click.lidThickness.toFixed(2)*1;
+
+        this.addLog(21, "    . Radius (radius): " + this.click.radius.toFixed(2));
+        this.addLog(22, "    . Höhe innerer Teil vom Deckel im Korpus (lidThickness):  " + this.click.lidThickness.toFixed(2));
+        this.addLog(23, "    . Zylinderlänge im Korpus (heightCorpus): " + this.click.heightCorpus.toFixed(2));
+        this.addLog(24, "    . Zylinderlänge im Deckel (heightLid): " + this.click.heightLid.toFixed(2));
     }
 
     //-----------------------------------------------------------------------------------------------------------------
