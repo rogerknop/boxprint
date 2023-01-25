@@ -36,11 +36,16 @@ Die Schraublöcher sind getestet mit 2,9er Blechschrauben.
 Für den Typ ***box*** werden folgende Features unterstützt:
 * Höhe, Breite, Tiefe mit Klick Mechanismus (eigene Werte oder automatisch berechnet)
 * Sockets zum Schrauben für:
+  * Deckel
   * ESP Lolin NodeMcu V3
   * Shelly RGB
   * Lochraster 2,54mm
+  * Komplettes Gehöause
 * Array mit Einzel Schraubsockets
 * Array mit Löchern
+
+Ab einer gwissen Größe müssen die Stützteile für die Klick Einbuchtungen entfernt werden.  
+Dies geht recht gut mit einem Cutter Messer und einem 90 Grad Schnitt am oberen/äußeren Rand der Einbuchtung am Deckel.
 
 Weiterhin gibt es den Typ ***clamp***.  
 Es geht darum, dass gewisse Objekte nicht auf einem Lochraster befestigt werden können.  

@@ -4,7 +4,7 @@
     "type": "box",
     "modelData": {
         "width": 80, //kurze Seite
-        "depth": 200, //lange Seite
+        "depth": 180, //lange Seite
         "height": 35,
         "thickness": 1.5, 
         "rounded": 0.3,
@@ -78,7 +78,7 @@
                     "shiftHeight": 0
                 },
                 {
-                    "active": true,
+                    "active": false,
                     "position": "r",   //f=front / b=back / l=left / r=right / g=round
                     "shape": "c", //c=circle / r=rectangle
                     "radius": 4,
@@ -132,8 +132,125 @@
                     "shiftHeight": 0
                 },
                 {
-                    "active": true,
+                    "active": false,
                     "position": "r",   //f=front / b=back / l=left / r=right / g=round
+                    "shape": "c", //c=circle / r=rectangle
+                    "radius": 4,
+                    //Shift vom Mittelpunkt
+                    "shiftWidth": -90,
+                    "shiftHeight": 0
+                },
+                {
+                    "active": true,
+                    "position": "l",   //f=front / b=back / l=left / r=right / g=round
+                    "shape": "c", //c=circle / r=rectangle
+                    "radius": 4,
+                    //Shift vom Mittelpunkt
+                    "shiftWidth": 0,
+                    "shiftHeight": 0
+                },
+                {
+                    "active": true,
+                    "position": "l",   //f=front / b=back / l=left / r=right / g=round
+                    "shape": "c", //c=circle / r=rectangle
+                    "radius": 4,
+                    //Shift vom Mittelpunkt
+                    "shiftWidth": 15,
+                    "shiftHeight": 0
+                },
+                {
+                    "active": true,
+                    "position": "l",   //f=front / b=back / l=left / r=right / g=round
+                    "shape": "c", //c=circle / r=rectangle
+                    "radius": 4,
+                    //Shift vom Mittelpunkt
+                    "shiftWidth": 30,
+                    "shiftHeight": 0
+                },
+                {
+                    "active": true,
+                    "position": "l",   //f=front / b=back / l=left / r=right / g=round
+                    "shape": "c", //c=circle / r=rectangle
+                    "radius": 4,
+                    //Shift vom Mittelpunkt
+                    "shiftWidth": 45,
+                    "shiftHeight": 0
+                },
+                {
+                    "active": true,
+                    "position": "l",   //f=front / b=back / l=left / r=right / g=round
+                    "shape": "c", //c=circle / r=rectangle
+                    "radius": 4,
+                    //Shift vom Mittelpunkt
+                    "shiftWidth": 60,
+                    "shiftHeight": 0
+                },
+                {
+                    "active": true,
+                    "position": "l",   //f=front / b=back / l=left / r=right / g=round
+                    "shape": "c", //c=circle / r=rectangle
+                    "radius": 4,
+                    //Shift vom Mittelpunkt
+                    "shiftWidth": 75,
+                    "shiftHeight": 0
+                },
+                {
+                    "active": false,
+                    "position": "l",   //f=front / b=back / l=left / r=right / g=round
+                    "shape": "c", //c=circle / r=rectangle
+                    "radius": 4,
+                    //Shift vom Mittelpunkt
+                    "shiftWidth": 90,
+                    "shiftHeight": 0
+                },
+                {
+                    "active": true,
+                    "position": "l",   //f=front / b=back / l=left / r=right / g=round
+                    "shape": "c", //c=circle / r=rectangle
+                    "radius": 4,
+                    //Shift vom Mittelpunkt
+                    "shiftWidth": -15,
+                    "shiftHeight": 0
+                },
+                {
+                    "active": true,
+                    "position": "l",   //f=front / b=back / l=left / r=right / g=round
+                    "shape": "c", //c=circle / r=rectangle
+                    "radius": 4,
+                    //Shift vom Mittelpunkt
+                    "shiftWidth": -30,
+                    "shiftHeight": 0
+                },
+                {
+                    "active": true,
+                    "position": "l",   //f=front / b=back / l=left / r=right / g=round
+                    "shape": "c", //c=circle / r=rectangle
+                    "radius": 4,
+                    //Shift vom Mittelpunkt
+                    "shiftWidth": -45,
+                    "shiftHeight": 0
+                },
+                {
+                    "active": true,
+                    "position": "l",   //f=front / b=back / l=left / r=right / g=round
+                    "shape": "c", //c=circle / r=rectangle
+                    "radius": 4,
+                    //Shift vom Mittelpunkt
+                    "shiftWidth": -60,
+                    "shiftHeight": 0
+                },
+                {
+                    "active": true,
+                    "position": "l",   //f=front / b=back / l=left / r=right / g=round
+                    "shape": "c", //c=circle / r=rectangle
+                    "radius": 4,
+                    //Shift vom Mittelpunkt
+                    "shiftWidth": -75,
+                    "shiftHeight": 0
+                },
+                {
+                    "active": false,
+                    "position": "l",   //f=front / b=back / l=left / r=right / g=round
                     "shape": "c", //c=circle / r=rectangle
                     "radius": 4,
                     //Shift vom Mittelpunkt
