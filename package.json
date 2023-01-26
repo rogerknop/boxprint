@@ -1,13 +1,13 @@
 {
-  "name": "cad",
+  "name": "BoxPrint",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "start": "npx nodemon -w ./src -w ./config src/index.js"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Roger Knop",
+  "license": "MIT",
   "devDependencies": {
     "@jscad/cli": "^2.2.7"
   },

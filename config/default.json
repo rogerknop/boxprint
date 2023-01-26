@@ -17,7 +17,7 @@
             "shift" : 0
         },
         "socketLid": {
-            "active": true,
+            "active": false,
             "only2" : true
         },
         "socketBreadboard": {
@@ -57,6 +57,15 @@
         "holeControl": {
             "active": true,
             "holes": [
+                {
+                    "active": false,
+                    "position": "f",   //f=front / b=back / l=left / r=right / g=round
+                    "shape": "c", //c=circle / r=rectangle
+                    "radius": 1.5,
+                    //Shift vom Mittelpunkt
+                    "shiftWidth": -4,
+                    "shiftHeight": 0
+                },
                 {
                     "active": false,
                     "position": "f",   //f=front / b=back / l=left / r=right / g=round
