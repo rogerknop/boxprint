@@ -13,7 +13,7 @@
             "active": true,
             "count": 4,
             "lengthPercent": 0.6,
-            "width": 1.5,
+            "width": 2.5,
             "shift" : 0
         },
         "socketLid": {
@@ -44,13 +44,21 @@
             "shiftDepth": 8
         },
         "socketSingleScrewControl": {
-            "active": false,
+            "active": true,
             "screws": [
                 {
                     "active": true,
+                    "positionLid": false,
                     "height": 8.5,
                     "shiftWidth": 14,
                     "shiftDepth": 10
+                },
+                {
+                    "active": true,
+                    "positionLid": true,
+                    "height": 2.5,
+                    "shiftWidth": 26,
+                    "shiftDepth": 0
                 }
             ]
         },
@@ -59,7 +67,7 @@
             "holes": [
                 {
                     "active": false,
-                    "position": "f",   //f=front / b=back / l=left / r=right / g=round
+                    "position": "f",   //f=front / b=back / l=left / r=right / g=round / t=top (=lid)
                     "shape": "c", //c=circle / r=rectangle
                     "radius": 1.5,
                     //Shift vom Mittelpunkt
@@ -68,7 +76,7 @@
                 },
                 {
                     "active": false,
-                    "position": "f",   //f=front / b=back / l=left / r=right / g=round
+                    "position": "f",   //f=front / b=back / l=left / r=right / g=round / t=top (=lid)
                     "shape": "c", //c=circle / r=rectangle
                     "radius": 1.5,
                     //Shift vom Mittelpunkt
@@ -77,7 +85,7 @@
                 },
                 {
                     "active": false,
-                    "position": "l" , //f=front / b=back / l=left / r=right / g=round
+                    "position": "l" , //f=front / b=back / l=left / r=right / g=round / t=top (=lid)
                     "shape": "r", //c=circle / r=rectangle
                     "width": 8,
                     "depth": 4,
@@ -87,11 +95,20 @@
                 },
                 {
                     "active": true,
-                    "position": "g" , //f=front / b=back / l=left / r=right / g=round
+                    "position": "g" , //f=front / b=back / l=left / r=right / g=round / t=top (=lid)
                     "shape": "c", //c=circle / r=rectangle
                     "radius": 2,
                     //Shift vom Mittelpunkt
                     "shiftWidth": -5,
+                    "shiftDepth":20
+                },
+                {
+                    "active": true,
+                    "position": "t" , //f=front / b=back / l=left / r=right / g=round / t=top (=lid)
+                    "shape": "c", //c=circle / r=rectangle
+                    "radius": 2,
+                    //Shift vom Mittelpunkt
+                    "shiftWidth": -12,
                     "shiftDepth":20
                 }
             ]

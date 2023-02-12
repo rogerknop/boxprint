@@ -148,13 +148,13 @@ class Box {
 
         if (this.holeControl?.active && (this.holeControl?.holes?.length>0)) {
             this.holeControl.holes.forEach((hole, idx) => {
-                if (hole.active) result = this.addHole(result, hole, idx);
+                if (hole.active && (hole.position!="t")) result = this.addHole(result, hole, idx);
             });
         }
 
         if (this.socketSingleScrewControl?.active && (this.socketSingleScrewControl?.screws?.length>0)) {
             this.socketSingleScrewControl.screws.forEach((screw, idx) => {
-                if (screw.active) result = this.addScrewSocket(result, screw, idx);
+                if (screw.active && !screw.positionLid) result = this.addScrewSocket(result, screw, idx);
             });
         }
 
@@ -244,6 +244,18 @@ class Box {
             }
         }
     
+        if (this.holeControl?.active && (this.holeControl?.holes?.length>0)) {
+            this.holeControl.holes.forEach((hole, idx) => {
+                if (hole.active && (hole.position=="t")) result = this.addHole(result, hole, idx);
+            });
+        }
+
+        if (this.socketSingleScrewControl?.active && (this.socketSingleScrewControl?.screws?.length>0)) {
+            this.socketSingleScrewControl.screws.forEach((screw, idx) => {
+                if (screw.active && screw.positionLid) result = this.addScrewSocket(result, screw, idx);
+            });
+        }
+
         return result;
     }
 
@@ -253,14 +265,20 @@ class Box {
         let lochHoehe=0;
         let lochBreite=0;
         let holeShape;
+        let cylinderheight = this.thickness*1.1;
+
+        if (hole.position=="t") {
+            cylinderheight = this.computed.lid_thickness_complete + 0.1;
+        }
+        
         if (hole.shape=="c") {
-            holeShape = cylinder( {radius: hole.radius, height: this.thickness*1.1});
+            holeShape = cylinder( {radius: hole.radius, height: cylinderheight});
             this.addLog(logNr+1, "  - Loch Kreis mit Radius: " + hole.radius);
             lochBreite = (hole.radius*2);
             lochHoehe  = (hole.radius*2);
         }
         if (hole.shape=="r") {
-            holeShape = roundedCuboid({size: [hole.width, hole.depth, this.thickness*1.5], roundRadius: 0.1});
+            holeShape = roundedCuboid({size: [hole.width, hole.depth, cylinderheight], roundRadius: 0.1});
             this.addLog(logNr+1, "  - Loch Rechteck: " + hole.width + "x" + hole.depth);
             lochBreite = hole.width;
             lochHoehe  = hole.depth;
@@ -313,19 +331,20 @@ class Box {
             abstandWandMittig = this.computed.innerDepth - lochBreite;
             this.addLog(logNr+2, "    . Position Links");
         }
-        if (hole.position=="g") {
+        if ((hole.position=="g") || (hole.position=="t")) {
             width=-hole.shiftWidth;
             depth=hole.shiftDepth;
-            height=(this.thickness)/2;
+            height=cylinderheight/2;
             abstandMitte = width;
             abstandWandMittig = this.computed.innerWidth - lochBreite;
-            this.addLog(logNr+2, "    . Position Boden");
+            if (hole.position=="g") this.addLog(logNr+2, "    . Position Boden")
+            else this.addLog(logNr+2, "    . Position Deckel")
         }
 
         holeShape = rotate([degToRad(rotateX), 0, degToRad(rotateY)], holeShape);
         holeShape = center({relativeTo: [width, depth, height]}, holeShape);
 
-        if (hole.position!="g") {
+        if ((hole.position!="g") && (hole.position!="t")) {
             let abstandHoehe = height - this.thickness;
             this.addLog(logNr+3, "    . Abstand Boden: " + (abstandHoehe - (lochHoehe/2)).toFixed(2));
             this.addLog(logNr+4, "    . Abstand Rand oben: " + (this.computed.innerHeight - (abstandHoehe + (lochHoehe/2))).toFixed(2));
@@ -350,12 +369,32 @@ class Box {
     }
 
     //-----------------------------------------------------------------------------------------------------------------
-    addScrewSocket(result, screw) {
+    addScrewSocket(result, screw, idx) {
+        let logNr = 1000 + ((idx-1) * 10);
         let screwSocket = this.getScrewSocket(screw.height);
         let socket_height = this.thickness+(screw.height/2);
 
+        if (screw.positionLid) {
+            this.addLog(logNr+1, "  - Single Schraubsockel Deckel:");
+            socket_height = this.computed.lid_thickness_complete+(screw.height/2);
+        }
+        else {
+            this.addLog(logNr+1, "  - Single Schraubsockel Boden:");
+        }
+
         screwSocket = center({relativeTo: [-screw.shiftWidth, screw.shiftDepth, socket_height]}, screwSocket);
         result = union(result, screwSocket);
+
+        let lochBreite = this.screw.outerRadius * 2;
+        let abstandMitte = screw.shiftWidth;
+        let abstandWandMittig = this.computed.innerWidth - lochBreite;
+
+        this.addLog(logNr+3, "    . Abstand Wand 1: " + ((abstandWandMittig/2) - abstandMitte).toFixed(2));
+        this.addLog(logNr+4, "    . Abstand Wand 2: " + ((abstandWandMittig/2) + abstandMitte).toFixed(2));
+        abstandMitte = screw.shiftDepth;
+        abstandWandMittig = this.computed.innerDepth - lochBreite;
+        this.addLog(logNr+5, "    . Abstand Wand 3: " + ((abstandWandMittig/2) - abstandMitte).toFixed(2));
+        this.addLog(logNr+6, "    . Abstand Wand 4: " + ((abstandWandMittig/2) + abstandMitte).toFixed(2));
 
         return result;
     }
