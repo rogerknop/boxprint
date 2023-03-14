@@ -498,8 +498,8 @@ class Box {
         let shiftDepth = this.socket.shiftDepth;
         let shiftWidth = this.socket.shiftWidth;
 
-        this.addLog(20, "  - Lochraster Lochabstand Breite " + (socketWidth * 2).toFixed(2));
-        this.addLog(20, "  - Lochraster Lochabstand Tiefe " + (socketDepth * 2).toFixed(2));
+        this.addLog(30, "  - Lochraster Lochabstand Breite " + (socketWidth * 2).toFixed(2));
+        this.addLog(30, "  - Lochraster Lochabstand Tiefe " + (socketDepth * 2).toFixed(2));
 
         let s = center({relativeTo: [socketWidth+shiftWidth, socketDepth+shiftDepth, socket_height]}, screwSocket);
         result = union(result, s);

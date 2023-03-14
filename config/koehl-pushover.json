@@ -1,0 +1,100 @@
+{
+    "name": "Köhl Pushover ESP",
+    "techName": "koehl-pushover",
+    "type": "box",
+    "modelData": {
+        "width": 41, //kurze Seite
+        "depth": 41, //lange Seite
+        "height": 34,
+        "thickness": 1.5, 
+        "rounded": 0.3,
+        "outerScrews": true,
+        "ventilation": {
+            "active": true,
+            "count": 5,
+            "lengthPercent": 0.8,
+            "width": 1.5,
+            "shift" : 0
+        },
+        "socketBreadboard": {
+            //Lochraster (Breadboard) 2.54mm Abstand
+            "active": true,
+            "height": 7,
+            "maxWidth": 0,  //0=max. Width
+            "maxDepth": 0,  //0=max. Depth
+            "shiftWidth": 0,
+            "shiftDepth": 0
+        },
+        "socketEsp": {
+            "active": false,
+            "model": "lolin_nodemcu_v3",
+            "height": 15,
+            "rotate": false,
+            "shiftWidth": 0,
+            "shiftDepth": 0
+        },
+        "socketShelly": {
+            "active": false,
+            "model": "rgb",
+            "shiftWidth": 0,
+            "shiftDepth": 8
+        },
+        "socketSingleScrewControl": {
+            "active": false,
+            "screws": [
+                {
+                    "active": true,
+                    "height": 8.5,
+                    "shiftWidth": 22,
+                    "shiftDepth": 10
+                }
+            ]
+        },
+        "holeControl": {
+            "active": true,
+            "holes": [
+                {
+                    "active": true,
+                    "position": "b",   //f=front / b=back / l=left / r=right / g=round
+                    "shape": "r",      //c=circle / r=rectangle
+                    "width": 3.5,
+                    "depth": 7,
+                    "shiftWidth": 15,
+                    "shiftHeight": 12.80
+                },
+                {
+                    "active": true,
+                    "position": "f" , //f=front / b=back / l=left / r=right / g=round
+                    "shape": "r",      //c=circle / r=rectangle
+                    "width": 12,
+                    "depth": 9,
+                    "shiftWidth": 0,
+                    "shiftHeight": -6
+                },
+                {
+                    "active": true,
+                    "position": "b" , //f=front / b=back / l=left / r=right / g=round
+                    "shape": "c",     //c=circle / r=rectangle
+                    "radius": 4,
+                    "shiftWidth": -12,
+                    "shiftHeight": 9
+                }
+            ]
+        },
+        "screw": {
+            //Diese Werte am Besten nicht verändern! Definiert den Schraublöcher
+            "outerRadius": 2.5,
+            "innerRadius": 1.5
+        },
+        //"click": true, => Dann wird immer berechnet / false=kein Click
+        "click": {
+            "active": true,
+            "compute": true,
+            //Diese Werte am Besten nicht verändern! Definiert den Click Cylinder
+            "lidThickness": 2,
+            "radius": 0.5,
+            "heightCorpus": 9,
+            "heightLid": 10
+        }
+    }
+}
