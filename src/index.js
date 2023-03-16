@@ -22,7 +22,7 @@ function main () {
       if (core.config.extensionAvailable) {
         try {
           core.config.extension.processEnd(box);
-        } catch (e) {}
+        } catch (e) {console.log(e.message); throw e;}
       }
 
       box.logMeasurements();
