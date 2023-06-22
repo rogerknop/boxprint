@@ -21,20 +21,22 @@ class Extension {
         box.computed.lid = subtract(box.computed.lid , display);
 
         let shift = 2;
-        display = cuboid({size: [60, 93, 4]});
-        display = center({relativeTo: [0, shift, 2 + 3.54 - 2]}, display);
+        let versenkt = 3;
+        display = cuboid({size: [60, 100, 4]});
+        display = center({relativeTo: [0, shift, 2 + box.computed.lid_thickness_complete - versenkt]}, display);
         box.computed.lid = subtract(box.computed.lid , display);
 
-        let screwSocket = box.getScrewSocket(2);
-        let socket_height = (2 + (3.54-2) - 1);
+        let ueberstand = 0.9;
+        let screwSocket = box.getScrewSocket(versenkt+ueberstand);
+        let socket_height = (versenkt/2) + (box.computed.lid_thickness_complete - versenkt + ueberstand);
 
-        let shiftWidth = (innerWidth/2) - 1.3;
-        let shiftDepth = (innerDepth/2) + 4.5;
+        let shiftWidth = (innerWidth/2) + 0.1; // 1.3;
+        let shiftDepth = (innerDepth/2) + 6;
         let s = center({relativeTo: [-shiftWidth, -shiftDepth, socket_height]}, screwSocket);
         box.computed.lid = union(box.computed.lid, s);
-        s = center({relativeTo: [-shiftWidth, shiftDepth + 3, socket_height]}, screwSocket);
+        s = center({relativeTo: [-shiftWidth, shiftDepth + 4, socket_height]}, screwSocket);
         box.computed.lid = union(box.computed.lid, s);
-        s = center({relativeTo: [shiftWidth, shiftDepth + 3, socket_height]}, screwSocket);
+        s = center({relativeTo: [shiftWidth, shiftDepth + 4, socket_height]}, screwSocket);
         box.computed.lid = union(box.computed.lid, s);
         s = center({relativeTo: [shiftWidth, -shiftDepth, socket_height]}, screwSocket);
         box.computed.lid = union(box.computed.lid, s);

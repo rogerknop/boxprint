@@ -1,14 +1,14 @@
 {
-    "name": "Keypad Touch Display",
-    "techName": "keypad",
+    "name": "TV Deckel",
+    "techName": "tvdeckel",
     "type": "box",
     "modelData": {
-        "width": 70, //kurze Seite
-        "depth": 110, //lange Seite
-        "height": 19,
+        "width": 100, //kurze Seite
+        "depth": 190, //lange Seite
+        "height": 18,
         "thickness": 1.5, 
-        "rounded": 0.3,
-        "outerScrews": true,
+        "rounded": 0.4,
+        "outerScrews": false,
         "ventilation": {
             "active": false,
             "count": 5,
@@ -18,7 +18,7 @@
         },
         "socketBreadboard": {
             //Lochraster (Breadboard) 2.54mm Abstand
-            "active": true,
+            "active": false,
             "height": 6,
             "maxWidth": 40,  //0=max. Width
             "maxDepth": 60,  //0=max. Depth
@@ -40,15 +40,35 @@
             "shiftDepth": 8
         },
         "socketSingleScrewControl": {
-            "active": false,
+            "active": true,
             "screws": [
                 {
                     "active": true,
-                    "positionLid": true,
-                    "height": 4,
-                    "shiftHeight": -10,
-                    "shiftWidth": 22,
-                    "shiftDepth": 10
+                    "positionLid": false,
+                    "height": 16.5,
+                    "shiftWidth": 42,
+                    "shiftDepth": 87
+                },
+                {
+                    "active": true,
+                    "positionLid": false,
+                    "height": 16.5,
+                    "shiftWidth": -42,
+                    "shiftDepth": 87
+                },
+                {
+                    "active": true,
+                    "positionLid": false,
+                    "height": 16.5,
+                    "shiftWidth": 42,
+                    "shiftDepth": -87
+                },
+                {
+                    "active": true,
+                    "positionLid": false,
+                    "height": 16.5,
+                    "shiftWidth": -42,
+                    "shiftDepth": -87
                 }
             ]
         },
@@ -59,21 +79,21 @@
                     "active": true,
                     "position": "f" , //f=front / b=back / l=left / r=right / g=round
                     "shape": "r",      //c=circle / r=rectangle
-                    "width": 12,
-                    "depth": 6,
+                    "width": 90,
+                    "depth": 20,
                     "shiftWidth": 0,
-                    "shiftHeight": 0
+                    "shiftHeight": 2
                 }
             ]
         },
         "screw": {
             //Diese Werte am Besten nicht verändern! Definiert den Schraublöcher
-            "outerRadius": 2.5,
-            "innerRadius": 1.5
+            "outerRadius": 8,
+            "innerRadius": 2
         },
         //"click": true, => Dann wird immer berechnet / false=kein Click
         "click": {
-            "active": true,
+            "active": false,
             "compute": true,
             //Diese Werte am Besten nicht verändern! Definiert den Click Cylinder
             "lidThickness": 2,
