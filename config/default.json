@@ -126,6 +126,28 @@
             "radius": 0.5,
             "heightCorpus": 9,
             "heightLid": 10
+        },
+        "textControl": {
+            "active": true,
+            "texts": [
+                {
+                    "active": true,
+                    "text": "Rogi",
+                    "position": "g",   //g=round / t=top (=lid) / Seiten testen
+                    "union": false,
+                    "fontSize": 8,
+                    "lineThickness": 1,
+                    "extrudeHeight": 5,
+                    "rotate": 0,
+                    "alignAnkerX": "center",
+                    "alignAnkerY": "center",
+                    "alignMultiline": "center",
+                    //Shift vom Mittelpunkt
+                    "shiftWidth": -25,
+                    "shiftDepth": 20,
+                    "shiftHeight": 0
+                }
+            ]
         }
     }
 }

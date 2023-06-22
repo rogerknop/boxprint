@@ -5,7 +5,7 @@ const fs = require('fs');
 const jsonSerializer = require('@jscad/json-serializer');
 const objSerializer = require('@jscad/obj-serializer');
 
-const { roundedCuboid, cuboid, rectangle, roundedRectangle, cylinder } = jscad.primitives;
+const { roundedCuboid, cuboid, rectangle, roundedRectangle, square, polygon, cylinder } = jscad.primitives;
 const { subtract, union } = jscad.booleans;
 const { center, rotate } = jscad.transforms;
 const { degToRad } = jscad.utils;
@@ -60,19 +60,7 @@ class Box {
 
         let result = roundedCuboid({size: [this.width, this.depth, this.height+this.rounded], center: [0, 0, ((this.height+this.rounded)/2)], roundRadius: this.rounded});
         result = subtract(result,  roundedCuboid({size: [this.computed.innerWidth, this.computed.innerDepth, this.height+this.rounded], center: [0, 0, ((this.height+this.rounded)/2)+this.thickness], roundRadius: this.rounded}));
-        
-        /* GEHT LEIDER NICHT
-        let desc = vectorText({ yOffset: 0, height: 10, extrudeOffset: 2, input: 'Rogi' });
-        let p = [];
-        desc.forEach(function (s) {
-            //p.push(extrudeRectangular(s, { w: 3, h: 3 }));
-            result = union(result, extrudeRectangular(s, { w: 3, h: 3 }));
-        });
-        result = union(result, p);
-        const paths = desc.map((segment) => segmentToPath(segment))
-        let text = this.csgFromSegments(2, desc);
-        */
-
+                
         let notround = cuboid({size: [this.width, this.depth, this.rounded]});
         notround = center({relativeTo: [0, 0, this.height+(this.rounded/2)]}, notround);
         result = subtract(result, notround);
@@ -149,6 +137,12 @@ class Box {
         if (this.holeControl?.active && (this.holeControl?.holes?.length>0)) {
             this.holeControl.holes.forEach((hole, idx) => {
                 if (hole.active && (hole.position!="t")) result = this.addHole(result, hole, idx);
+            });
+        }
+
+        if (this.textControl?.active && (this.textControl?.texts?.length>0)) {
+            this.textControl.texts.forEach((text, idx) => {
+                if (text.active && (text.position=="g")) result = this.addText(result, text, idx);
             });
         }
 
@@ -247,6 +241,12 @@ class Box {
         if (this.holeControl?.active && (this.holeControl?.holes?.length>0)) {
             this.holeControl.holes.forEach((hole, idx) => {
                 if (hole.active && (hole.position=="t")) result = this.addHole(result, hole, idx);
+            });
+        }
+
+        if (this.textControl?.active && (this.textControl?.texts?.length>0)) {
+            this.textControl.texts.forEach((text, idx) => {
+                if (text.active && (text.position=="t")) result = this.addText(result, text, idx);
             });
         }
 
@@ -624,6 +624,51 @@ class Box {
         this.addLog(22, "    . Höhe innerer Teil vom Deckel im Korpus (lidThickness):  " + this.click.lidThickness.toFixed(2));
         this.addLog(23, "    . Zylinderlänge im Korpus (heightCorpus): " + this.click.heightCorpus.toFixed(2));
         this.addLog(24, "    . Zylinderlänge im Deckel (heightLid): " + this.click.heightLid.toFixed(2));
+    }
+    
+    //-----------------------------------------------------------------------------------------------------------------
+    addText(result, text, idx) {
+        const textObj = this.getTextObject({
+            text: text.text,
+            fontSize: text.fontSize || 10,
+            extrudeHeight: text.extrudeHeight || 5,
+            xOffset: text.shiftWidth,
+            yOffset: -text.shiftDepth,
+            extrudeOffset: 0,
+            lineThickness: text.lineThickness,
+            alignMultiline: text.alignMultiline || "left"
+        });
+        
+        // rok-todo: alignAnkerX und alignAnkerY berechnen und entsprechend verschieben
+        // rok-todo: Ob Seiten gehen testen
+        // rok-todo: Bei Lid union innen und subtract aussen - evtl. zusätzliches Attribut
+
+        if (text.union) {
+            // rok-todo: entsprechend Thickness verschieben
+            result = union(result, textObj);
+        }
+        else {
+            result = subtract(result, textObj);
+        }
+
+        return result;
+    }
+
+    //-----------------------------------------------------------------------------------------------------------------
+    getTextObject(control) {
+       let vectorTextObj = vectorText({ align: control.alignMultiline, height: control.fontSize, 
+                                        xOffset: control.xOffset, yOffset: control.yOffset,
+                                        extrudeOffset: control.extrudeOffset, input: control.text });
+       const { path2 } = require('@jscad/modeling').geometries
+       const segmentToPath = (segment) => {  return path2.fromPoints({close: false}, segment)  }        
+       const paths = vectorTextObj.map((segment) => segmentToPath(segment));
+       let text3d = null;
+       paths.forEach((part) => {
+        const texttmp = extrudeRectangular({size: control.lineThickness, height: control.extrudeHeight }, part);
+        if (!text3d) { text3d = texttmp; }
+        else { text3d = union(text3d, texttmp); }    
+       })
+       return text3d;
     }
 
     //-----------------------------------------------------------------------------------------------------------------
