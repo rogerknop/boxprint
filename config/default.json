@@ -3,14 +3,14 @@
     "techName": "defaultbox",
     "type": "box",
     "modelData": {
-        "width": 60, //kurze Seite
-        "depth": 90, //lange Seite
-        "height": 20,
+        "width": 40, //kurze Seite
+        "depth": 60, //lange Seite
+        "height": 10,
         "thickness": 1.5, 
-        "rounded": 0.3,
+        "rounded": 0.7,
         "outerScrews": false,
         "ventilation": {
-            "active": true,
+            "active": false,
             "count": 4,
             "lengthPercent": 0.6,
             "width": 2.5,
@@ -44,7 +44,7 @@
             "shiftDepth": 8
         },
         "socketSingleScrewControl": {
-            "active": true,
+            "active": false,
             "screws": [
                 {
                     "active": true,
@@ -63,7 +63,7 @@
             ]
         },
         "holeControl": {
-            "active": true,
+            "active": false,
             "holes": [
                 {
                     "active": false,
@@ -116,7 +116,7 @@
         "screw": {
             //Diese Werte am Besten nicht verändern! Definiert den Schraublöcher
             "outerRadius": 2.5,
-            "innerRadius": 1.5
+            "innerRadius": 1.3
         },
         "clickx": true, // => Dann wird immer berechnet / false=kein Click
         "click": {
@@ -132,20 +132,57 @@
             "texts": [
                 {
                     "active": true,
-                    "text": "Rogi",
+                    "text": "Rogi\nKnobi",
                     "position": "g",   //g=round / t=top (=lid) / Seiten testen
+                    "inside": true,
                     "union": false,
-                    "fontSize": 8,
-                    "lineThickness": 1,
-                    "extrudeHeight": 5,
+                    "fontSize": 4,
+                    "lineThickness": 0.8,
+                    "extrudeHeight": 0.5,
                     "rotate": 0,
-                    "alignAnkerX": "center",
-                    "alignAnkerY": "center",
+                    "alignAnkerX": "center",   //left / center /right
+                    "alignAnkerY": "center",   //top / center / bottom
                     "alignMultiline": "center",
                     //Shift vom Mittelpunkt
-                    "shiftWidth": -25,
-                    "shiftDepth": 20,
+                    "shiftWidth": 0,
+                    "shiftDepth": 0,
                     "shiftHeight": 0
+                },
+                {
+                    "active": true,
+                    "text": "Rogi",
+                    "position": "f",   //g=round / t=top (=lid) / Seiten testen
+                    "inside": true,
+                    "union": true,
+                    "fontSize": 2,
+                    "lineThickness": 0.2,
+                    "extrudeHeight": 0.5,
+                    "rotate": 0,
+                    "alignAnkerX": "center",   //left / center /right
+                    "alignAnkerY": "center",   //top / center / bottom
+                    "alignMultiline": "center",
+                    //Shift vom Mittelpunkt
+                    "shiftWidth": 0,
+                    "shiftDepth": 0,
+                    "shiftHeight": -1.2
+                },
+                {
+                    "active": true,
+                    "text": "Rogi",
+                    "position": "t",   //g=round / t=top (=lid) / Seiten testen
+                    "inside": true,
+                    "union": false,
+                    "fontSize": 2,
+                    "lineThickness": 0.3,
+                    "extrudeHeight": 0.8,
+                    "rotate": 0,
+                    "alignAnkerX": "center",   //left / center /right
+                    "alignAnkerY": "center",   //top / center / bottom
+                    "alignMultiline": "center",
+                    //Shift vom Mittelpunkt
+                    "shiftWidth": 0,
+                    "shiftDepth": 0,
+                    "shiftHeight": -1.2
                 }
             ]
         }

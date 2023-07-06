@@ -78,7 +78,7 @@
         "screw": {
             //Diese Werte am Besten nicht verändern! Definiert den Schraublöcher
             "outerRadius": 2.5,
-            "innerRadius": 1.5
+            "innerRadius": 1.3
         }
     }
 }

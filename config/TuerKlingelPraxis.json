@@ -1,0 +1,95 @@
+{
+    "name": "Türklingel Praxis",
+    "techName": "tuerklingelpraxis",
+    "type": "box",
+    "modelData": {
+        "width": 75, //kurze Seite
+        "depth": 110, //lange Seite
+        "height": 40,
+        "thickness": 1.5, 
+        "rounded": 0.3,
+        "outerScrews": false,
+        "ventilation": {
+            "active": true,
+            "count": 5,
+            "lengthPercent": 0.8,
+            "width": 1,
+            "shift" : 0
+        },
+        "socketBreadboard": {
+            //Lochraster (Breadboard) 2.54mm Abstand
+            "active": true,
+            "height": 7,
+            "maxWidth": 45,  //0=max. Width
+            "maxDepth": 90,  //0=max. Depth
+            "shiftWidth": -8,
+            "shiftDepth": 0
+        },
+        "socketLid": {
+            "active": true,
+            "only2" : true
+        },
+        "holeControl": {
+            "active": true,
+            "holes": [
+                {
+                    "active": true,
+                    "position": "l",   //f=front / b=back / l=left / r=right / g=round
+                    "shape": "r",      //c=circle / r=rectangle
+                    "width": 55,
+                    "depth": 31,
+                    "shiftWidth": 0,
+                    "shiftHeight": -2
+                },
+                {
+                    "active": true,
+                    "position": "l",   //f=front / b=back / l=left / r=right / g=round
+                    "shape": "r",      //c=circle / r=rectangle
+                    "width": 68,
+                    "depth": 14,
+                    "shiftWidth": 0,
+                    "shiftHeight": -2
+                },
+                {
+                    "active": true,
+                    "position": "f" , //f=front / b=back / l=left / r=right / g=round
+                    "shape": "r",      //c=circle / r=rectangle
+                    "width": 12,
+                    "depth": 9,
+                    "shiftWidth": 8.5,
+                    "shiftHeight": -3.7
+                },
+                {
+                    "active": true,
+                    "position": "l",   //f=front / b=back / l=left / r=right / g=round
+                    "shape": "c",      //c=circle / r=rectangle
+                    "radius": 3.3,
+                    "depth": 13,
+                    "shiftWidth": -45,
+                    "shiftHeight": 10
+                },
+                {
+                    "active": true,
+                    "position": "f" , //f=front / b=back / l=left / r=right / g=round
+                    "shape": "c",     //c=circle / r=rectangle
+                    "radius": 4,
+                    "shiftWidth": -9,
+                    "shiftHeight": 7
+                }
+            ]
+        },
+        "click": {
+            "active": true,
+            //Diese Werte am Besten nicht verändern! Definiert den Click Cylinder
+            "lidThickness": 2,
+            "radius": 0.5,
+            "heightCorpus": 9,
+            "heightLid": 10
+        },
+        "screw": {
+            //Diese Werte am Besten nicht verändern! Definiert den Schraublöcher
+            "outerRadius": 2.5,
+            "innerRadius": 1.3
+        }
+    }
+}

@@ -12,7 +12,7 @@ const { degToRad } = jscad.utils;
 const { extrudeLinear, extrudeRectangular } = jscad.extrusions;
 const { vectorText } = jscad.text;
 const { path2 } = jscad.geometries;
-const { measureDimensions, measureCenter } = jscad.measurements;
+const { measureDimensions, measureCenter, measureBoundingBox } = jscad.measurements;
 
 const segmentToPath = (segment) => { return path2.fromPoints({close: false}, segment) };
 
@@ -142,7 +142,7 @@ class Box {
 
         if (this.textControl?.active && (this.textControl?.texts?.length>0)) {
             this.textControl.texts.forEach((text, idx) => {
-                if (text.active && (text.position=="g")) result = this.addText(result, text, idx);
+                if (text.active && (text.position!="t")) result = this.addText(result, text, idx);
             });
         }
 
@@ -487,10 +487,9 @@ class Box {
         let socketDepth; 
         let socketWidth;
         if (this.socket.maxDepth>0) { socketDepth = this.socket.maxDepth / 2; }
-        else { socketDepth = (this.depth/2) - this.thickness - this.screw.outerRadius - 2; }
+        else { socketDepth = (this.depth/2) - this.thickness - this.screw.outerRadius - 4; }
         if (this.socket.maxWidth>0) { socketWidth = this.socket.maxWidth / 2; }
-        else { socketWidth = (this.width/2) - this.thickness - this.screw.outerRadius - 2; }
-
+        else { socketWidth = (this.width/2) - this.thickness - this.screw.outerRadius - 4; }
         //socketDepth und socketWidth auf Lochabstand der Platine normalisieren
         let lochabstand = 2.54;
         socketDepth = (Math.floor( (socketDepth*2) / lochabstand) * lochabstand) / 2;
@@ -500,6 +499,10 @@ class Box {
 
         this.addLog(30, "  - Lochraster Lochabstand Breite " + (socketWidth * 2).toFixed(2));
         this.addLog(30, "  - Lochraster Lochabstand Tiefe " + (socketDepth * 2).toFixed(2));
+
+        //Druck Korrektur wegen Drucker Ungenauigkeiten
+        socketDepth += 0.5;
+        socketWidth += 0.5;
 
         let s = center({relativeTo: [socketWidth+shiftWidth, socketDepth+shiftDepth, socket_height]}, screwSocket);
         result = union(result, s);
@@ -628,27 +631,100 @@ class Box {
     
     //-----------------------------------------------------------------------------------------------------------------
     addText(result, text, idx) {
-        const textObj = this.getTextObject({
+        let logNr = 800 + ((idx-1) * 10);
+        
+        this.addLog(logNr+1, "  - Text: " + text.text);
+        
+        let textShape = this.getTextObject({
             text: text.text,
             fontSize: text.fontSize || 10,
             extrudeHeight: text.extrudeHeight || 5,
-            xOffset: text.shiftWidth,
-            yOffset: -text.shiftDepth,
+            xOffset: 0,
+            yOffset: 0,
             extrudeOffset: 0,
             lineThickness: text.lineThickness,
             alignMultiline: text.alignMultiline || "left"
         });
         
-        // rok-todo: alignAnkerX und alignAnkerY berechnen und entsprechend verschieben
-        // rok-todo: Ob Seiten gehen testen
-        // rok-todo: Bei Lid union innen und subtract aussen - evtl. zusätzliches Attribut
+        let bounds = measureBoundingBox(textShape);
+        let centerPoint = measureCenter(textShape); 
+
+        let width=0;
+        let depth=0;
+        let height=0;
+        let rotateX=0;
+        let rotateY=0;
+        let rotateZ=0;
+
+        let textWidth  = bounds[1][0] - bounds[0][0];
+        let textHeight = bounds[1][1] - bounds[0][1];
+
+        if (text.alignAnkerX == "left")   {  text.shiftWidth = text.shiftWidth + (textWidth / 2);  } 
+        if (text.alignAnkerX == "right")  {  text.shiftWidth = text.shiftWidth - (textWidth / 2);  } 
+
+        if (text.alignAnkerY == "top")    {  text.shiftDepth = text.shiftDepth + (textHeight / 2);  } 
+        if (text.alignAnkerY == "bottom") {  text.shiftDepth = text.shiftDepth - (textHeight / 2);  } 
+
+        if (text.position=="f") {
+            this.addLog(logNr+2, "    . Position Vorne - NOT WORKING!!!");
+            return result;
+            rotateX=90;
+            rotateY=0+text.rotate;
+            rotateZ=0;
+            width-=text.shiftWidth;
+            depth=(this.computed.innerDepth/2);//+(text.extrudeHeight/2)-this.thickness;
+            height=this.computed.innerCenterHeight + text.shiftHeight;
+            if (text.inside) { 
+                depth = depth - (text.extrudeHeight/2);  
+            }
+            else { 
+                depth = depth + (text.extrudeHeight/2) + this.thickness;  
+                height -= (this.thickness/2);
+            }
+        }
+        if (text.position=="b") {
+            this.addLog(logNr+2, "    . Position Hinten - NOT WORKING!!!");
+            return result;
+        }
+        if (text.position=="r") {
+            this.addLog(logNr+2, "    . Position Rechts - NOT WORKING!!!");
+            return result;
+        }
+        if (text.position=="l") {
+            this.addLog(logNr+2, "    . Position Links - NOT WORKING!!!");
+            return result;
+        }
+        if (text.position=="g") {
+            text.inside=true;
+            rotateX=0;
+            rotateY=0;
+            rotateZ=0 + text.rotate;
+            width=text.shiftWidth;
+            depth=text.shiftDepth;
+            height=text.extrudeHeight/2 + this.thickness;
+            if (!text.union) { height-=text.extrudeHeight/2; }
+            this.addLog(logNr+2, "    . Position Boden");
+        }
+        if (text.position=="t") {
+            text.inside=true;
+            rotateX=0;
+            rotateY=0;
+            rotateZ=0 + text.rotate;
+            width=text.shiftWidth;
+            depth=text.shiftDepth;
+            height=text.extrudeHeight/2 + this.computed.lid_thickness_complete;
+            if (!text.union) { height-=text.extrudeHeight/2; }
+            this.addLog(logNr+2, "    . Position Deckel");
+        }
+
+        textShape = rotate([degToRad(rotateX), degToRad(rotateY), degToRad(rotateZ)], textShape);
+        textShape = center({relativeTo: [width,depth,height]}, textShape);
 
         if (text.union) {
-            // rok-todo: entsprechend Thickness verschieben
-            result = union(result, textObj);
+            result = union(result, textShape);
         }
         else {
-            result = subtract(result, textObj);
+            result = subtract(result, textShape);
         }
 
         return result;
@@ -664,7 +740,7 @@ class Box {
        const paths = vectorTextObj.map((segment) => segmentToPath(segment));
        let text3d = null;
        paths.forEach((part) => {
-        const texttmp = extrudeRectangular({size: control.lineThickness, height: control.extrudeHeight }, part);
+        const texttmp = extrudeRectangular({corners: 'round', size: control.lineThickness, height: control.extrudeHeight }, part);
         if (!text3d) { text3d = texttmp; }
         else { text3d = union(text3d, texttmp); }    
        })
