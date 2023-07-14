@@ -166,6 +166,7 @@ class Box {
         let extrudeHeight = this.click.active ? this.click.lidThickness : this.thickness;
         this.computed.lid_thickness_complete = extrudeHeight + this.thickness - this.rounded;
         let lid = roundedRectangle({size: [this.computed.innerWidth-this.lidReduce, this.computed.innerDepth-this.lidReduce], roundRadius: 2})
+        this.addLog(4, "  - Deckel Kulanz (lidReduce): " + (this.lidReduce).toFixed(2));
         lid = extrudeLinear({height: extrudeHeight}, lid);
         lid = center({relativeTo: [0, 0, (extrudeHeight/2)+this.thickness-this.rounded]}, lid);
         result = union(result, lid);
