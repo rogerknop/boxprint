@@ -8,6 +8,7 @@
         "height": 10,
         "thickness": 1.5, 
         "rounded": 0.7,
+        "lidReduce": 0.05,
         "outerScrews": false,
         "ventilation": {
             "active": false,
