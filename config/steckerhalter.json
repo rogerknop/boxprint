@@ -1,0 +1,14 @@
+{
+    "name": "Steckdosen Halter",
+    "techName": "steckerhalter",
+    "type": "freestyle",
+    "modelData": {
+        "width": 45, //Steckdose Breite
+        "height": 48.5, //Steckdose Höhe
+        "depth": 10,
+        "foot": 30,
+        "thickness": 5,
+        "screwHoleRadius": 2, 
+        "rounded": 0.01
+    }
+}

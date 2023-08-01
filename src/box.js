@@ -66,12 +66,12 @@ class Box {
         result = subtract(result, notround);
 
         if (this.click?.active) {
-            let r = this.click.radius - 0.05;
+            let r = this.click.radius - 0.02;
             let h = this.click.heightCorpus;
             let clickDepth = (this.depth/2) - this.thickness;
             let clickWidth = (this.width/2) - this.thickness;
             let clickHeight = this.height - r - ((this.click.lidThickness -(2*this.click.radius)) / 2);
-            clickHeight-=0.5;
+            clickHeight+=0.2;
             
             let cyl = cylinder( {radius: r, height: h});
             cyl = rotate([0,degToRad(90),0], cyl);
@@ -110,15 +110,16 @@ class Box {
         }
 
         if (this.outerScrews) {
-            let screw_width = 7;
-            let screw_depth = 7;
-            let outer_screw = roundedCuboid({size: [screw_width+this.thickness, screw_depth, this.thickness], center: [0, 0, 0], roundRadius: this.rounded});
-            outer_screw = center({relativeTo: [0, 0, this.thickness/2]}, outer_screw);
+            let screw_width = 10;
+            let screw_depth = 10;
+            let screw_height = this.thickness*1.5;
+            let outer_screw = roundedCuboid({size: [screw_width+this.thickness, screw_depth, screw_height], center: [0, 0, 0], roundRadius: this.rounded});
+            outer_screw = center({relativeTo: [0, 0, screw_height/2]}, outer_screw);
 
             let outer_screw_hole = cylinder( {radius: 2.3, height: this.thickness*3});
             outer_screw = subtract(outer_screw, outer_screw_hole);
 
-            let osHeight = (this.thickness/2);
+            let osHeight = (screw_height/2);
             let osWidth = (this.width/2);
             let osDepth = (this.depth/2);
             osWidth = osWidth + (screw_width/2);
@@ -502,8 +503,8 @@ class Box {
         this.addLog(30, "  - Lochraster Lochabstand Tiefe " + (socketDepth * 2).toFixed(2));
 
         //Druck Korrektur wegen Drucker Ungenauigkeiten
-        socketDepth += 0.5;
-        socketWidth += 0.5;
+        socketDepth -= 0.5;
+        socketWidth -= 0.5;
 
         let s = center({relativeTo: [socketWidth+shiftWidth, socketDepth+shiftDepth, socket_height]}, screwSocket);
         result = union(result, s);

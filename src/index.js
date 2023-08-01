@@ -1,6 +1,7 @@
 const Core = require('./core.js');
 const Box = require('./box.js');
 const Clamp = require('./clamp.js');
+const Freestyle = require('./freestyle.js');
 
 function main () {
     let core = new Core();
@@ -34,11 +35,23 @@ function main () {
       
       if (core.config.extensionAvailable) {
         try {
-          core.config.extension.processEnd(box);
+          core.config.extension.processEnd(clamp);
         } catch (e) {}
       }
 
       clamp.export();
+    }
+
+    if (core.config.type == "freestyle") {
+      let freestyle = new Freestyle(core, core.config.modelData);
+      
+      if (core.config.extensionAvailable) {
+        try {
+          core.config.extension.processEnd(freestyle);
+        } catch (e) {}
+      }
+
+      freestyle.export();
     }
 
 }
