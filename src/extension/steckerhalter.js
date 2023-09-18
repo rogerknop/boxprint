@@ -19,8 +19,8 @@ class Extension {
 
         const width  = obj.width  + obj.thickness;
         const height = obj.height + obj.thickness;
-        const depth  = obj.depth;
-        const z = depth / 2;
+        let depth  = obj.depth;
+        let z = depth / 2;
 
         let result = roundedCuboid({size: [width, obj.thickness, depth], roundRadius: obj.rounded});
         result = center({relativeTo: [0, 0, z]}, result);
@@ -54,7 +54,21 @@ class Extension {
         result = subtract(result , hole);
         hole = center({relativeTo: [-holeWidth+8, footDepth, depth/2]}, hole);
         result = subtract(result , hole);
-       
+
+        z = obj.thickness / 2;
+        depth = obj.blockerDepth;
+        let blockertop = roundedCuboid({size: [width, depth, obj.thickness], roundRadius: obj.rounded});
+        blockertop = center({relativeTo: [0, obj.thickness, z]}, blockertop);        
+        result = union(result , blockertop);
+
+        sideWidth-=obj.thickness;
+        sideDepth=sideDepth/2;
+        let blockerside = roundedCuboid({size: [depth, height/2, obj.thickness], roundRadius: obj.rounded});
+        blockerside = center({relativeTo: [sideWidth, sideDepth, z]}, blockerside);        
+        result = union(result , blockerside);
+        blockerside = center({relativeTo: [-sideWidth, sideDepth, z]}, blockerside);        
+        result = union(result , blockerside);
+
         obj.computed.freestyle = result;
     }
 }

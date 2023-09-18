@@ -5,11 +5,11 @@
     "modelData": {
         "width": 44.5, //Steckdose Breite
         "height": 48, //Steckdose Höhe
-        "depth": 15,
+        "depth": 12,
         "blockerDepth": 5,
         "foot": 30,
-        "thickness": 5,
-        "screwHoleRadius": 2, 
+        "thickness": 4,
+        "screwHoleRadius": 2.7, 
         "rounded": 0.01
     }
 }
