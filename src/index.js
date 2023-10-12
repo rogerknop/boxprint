@@ -14,6 +14,7 @@ function main () {
       core.config.extensionAvailable=true;
       core.config.extension = new Extension(core, core.config.modelData);
     } catch (e) {
+      console.log(e);
       core.config.extensionAvailable=false;
     }
 
@@ -23,7 +24,7 @@ function main () {
       if (core.config.extensionAvailable) {
         try {
           core.config.extension.processEnd(box);
-        } catch (e) {console.log(e.message); throw e;}
+        } catch (e) {console.warn(e.message); throw e;}
       }
 
       box.logMeasurements();
@@ -48,7 +49,9 @@ function main () {
       if (core.config.extensionAvailable) {
         try {
           core.config.extension.processEnd(freestyle);
-        } catch (e) {}
+        } catch (e) {
+          console.error(e);
+        }
       }
 
       freestyle.export();
