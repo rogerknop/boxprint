@@ -36,7 +36,7 @@ class Element {
     // ********************************************************************************************
     // Transform element
     move(values) { this.transform("move", values); }
-    zoom(values) { this.transform("zoom", values); }
+    scale(values) { this.transform("scale", values); }
     rotate(values) { this.transform("rotate", values); }
     origin(values) { this.transform("origin", values); }
     transform(kind, values) {

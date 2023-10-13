@@ -1,6 +1,8 @@
+const Part = require('./part');
+
 const jscad = require('@jscad/modeling');
 const { subtract, union } = jscad.booleans;
-const { center, rotate, rotateX, rotateY, rotateZ } = jscad.transforms;
+const { center, rotate, rotateX, rotateY, rotateZ, translate, translateX, translateY, translateZ, scaleX, scaleY, scaleZ } = jscad.transforms;
 const { degToRad } = jscad.utils;
 const { measureDimensions, measureCenter, measureBoundingBox } = jscad.measurements;
 
@@ -14,14 +16,17 @@ function transformObject(obj, transform) {
         if (transformation.kind === "move") {
             obj = transformMove(obj, transformation.values);
         }
-        if (transformation.kind === "zoom") {
-            obj = transformZoom(obj, transformation.values);
+        if (transformation.kind === "scale") {
+            obj = transformScale(obj, transformation.values);
         }
         if (transformation.kind === "rotate") {
             obj = transformRotate(obj, transformation.values);
         }
         if (transformation.kind === "origin") {
             obj = transformOrigin(obj, transformation.values);
+        }
+        if (transformation.kind === "alignTo") {
+            obj = transformAlignTo(obj, transformation);
         }
     }
     return obj;
@@ -36,38 +41,45 @@ function initializeValues(values) {
 // ********************************************************************************************
 // Transform MOVE
 function transformMove(obj, values) {
-    if (values.x !== undefined) { obj = center({ axes: [true, false, false], relativeTo: [values.x, 0, 0] }, obj); }
-    if (values.y !== undefined) { obj = center({ axes: [false, true, false], relativeTo: [0, values.y, 0] }, obj); }
-    if (values.z !== undefined) { obj = center({ axes: [false, false, true], relativeTo: [0, 0, values.z] }, obj); }
+    if (values.x !== undefined) { obj = translateX(values.x, obj); }
+    if (values.y !== undefined) { obj = translateY(values.y, obj); }
+    if (values.z !== undefined) { obj = translateZ(values.z, obj); }
     return obj;
 }
 
 // ********************************************************************************************
 // Transform ROTATE
 function transformRotate(obj, values) {
-    //return rotate([degToRad(values.x), degToRad(values.y), degToRad(values.z)], object);
+    let info = getInfo(obj);
+    transformMove(obj, {x:0, y:0, z:0});
     if (values.x !== undefined) { obj = rotateX(degToRad(values.x), obj); }
     if (values.y !== undefined) { obj = rotateY(degToRad(values.y), obj); }
     if (values.z !== undefined) { obj = rotateZ(degToRad(values.z), obj); }
+    transformMove(obj, {x:info.centerPoint.x, y:info.centerPoint.y, z:info.centerPoint.z});
     return obj;
 }
 
 // ********************************************************************************************
 // Transform ZOOM
-function transformZoom(obj, values) {
-    //rok-todo: fehlt
+function transformScale(obj, values) {
+    let info = getInfo(obj);
+    transformMove(obj, {x:0, y:0, z:0});
+    if (values.x !== undefined) { obj = scaleX(values.x, obj); }
+    if (values.y !== undefined) { obj = scaleY(values.y, obj); }
+    if (values.z !== undefined) { obj = scaleZ(values.z, obj); }
+    transformMove(obj, {x:info.centerPoint.x, y:info.centerPoint.y, z:info.centerPoint.z});
     return obj;
 }
 
 // ********************************************************************************************
 // Align Origin
-function alignOrigin(value, idx, dimensions, center, bounds) {
-    let move = (dimensions[idx] / 2);
+function alignOrigin(value, idx, info) {
+    let move;
     if (value === "min") {
-        move = move;
+        move = -info.bounds[0][idx];
     }
     if (value === "max") {
-        move = -move;
+        move = -info.bounds[1][idx];
     }
     return move;
 }
@@ -76,23 +88,68 @@ function alignOrigin(value, idx, dimensions, center, bounds) {
 // Transform ORIGIN
 //   "min"=left or bottom or back / "max"=right or top or front
 function transformOrigin(obj, values) {
-    let bounds = measureBoundingBox(obj);
-    let centerPoint = measureCenter(obj);
-    let dimensions = measureDimensions(obj);
-
-    if (values.x !== undefined) { obj = center({ axes: [true, false, false], relativeTo: [alignOrigin(values.x, 0, dimensions, centerPoint, bounds), 0, 0] }, obj); }
-    if (values.y !== undefined) { obj = center({ axes: [false, true, false], relativeTo: [0, alignOrigin(values.y, 1, dimensions, centerPoint, bounds), 0] }, obj); }
-    if (values.z !== undefined) { obj = center({ axes: [false, false, true], relativeTo: [0, 0, alignOrigin(values.z, 2, dimensions, centerPoint, bounds)] }, obj); }
+    let info = getInfo(obj);
+    if (values.x !== undefined) { obj = transformMove(obj, {x: alignOrigin(values.x, 0, info)}); }
+    if (values.y !== undefined) { obj = transformMove(obj, {y: alignOrigin(values.y, 1, info)}); }
+    if (values.z !== undefined) { obj = transformMove(obj, {z: alignOrigin(values.z, 2, info)}); }
     return obj;
 }
 
 // ********************************************************************************************
-function createGuid(){
+// Transform Align to other Part
+//   "min" / "max" or "center"
+function transformAlignTo(obj, transformation) {
+    let fromPartInfo = getInfo(obj);
+    let toPartInfo = getInfo(transformation.toPart.getObject());
+
+    let d = {};
+    let dx = getAlignMoveValue(transformation.toPos.x, toPartInfo, 0) - getAlignMoveValue(transformation.fromPos.x, fromPartInfo, 0);
+    if (!isNaN(dx)) { d.x = dx; }
+    let dy = getAlignMoveValue(transformation.toPos.y, toPartInfo, 1) - getAlignMoveValue(transformation.fromPos.y, fromPartInfo, 1);
+    if (!isNaN(dy)) { d.y = dy; }
+    let dz = getAlignMoveValue(transformation.toPos.z, toPartInfo, 2) - getAlignMoveValue(transformation.fromPos.z, fromPartInfo, 2);
+    if (!isNaN(dz)) { d.z = dz; }
+
+    if (d.x || d.y || d.z) { obj = transformMove(obj, d); }
+    return obj;
+}
+
+// ********************************************************************************************
+// Compute Align Move Value
+function getAlignMoveValue(pos, info, idx) {
+    if (pos === undefined) { return undefined; }
+    let result;
+    const vmin = info.bounds[0][idx];
+    const vmax = info.bounds[1][idx];
+    if (pos === "min") {
+        result = vmin;
+    }
+    if (pos === "max") {
+        result = vmax;
+    }
+    if (pos === "center") {
+        result = vmin + (info.dimensions[idx]/2);
+    }
+    return result;
+}
+
+
+// ********************************************************************************************
+// Get Object Infos
+function getInfo(obj) {
+    let bounds = measureBoundingBox(obj);
+    let centerPoint = measureCenter(obj);
+    let dimensions = measureDimensions(obj);
+    return { bounds: bounds, centerPoint: centerPoint, dimensions, dimensions };
+}
+
+// ********************************************************************************************
+function createGuid() {
     var dt = new Date().getTime();
-    var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-        var r = (dt + Math.random()*16)%16 | 0;
-        dt = Math.floor(dt/16);
-        return (c=='x' ? r :(r&0x3|0x8)).toString(16);
+    var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        var r = (dt + Math.random() * 16) % 16 | 0;
+        dt = Math.floor(dt / 16);
+        return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
     });
     return uuid;
 }

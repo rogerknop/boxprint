@@ -14,8 +14,8 @@ function transformObject(obj, transform) {
         if (transformation.kind === "move") {
             obj = transformMove(obj, transformation.values);
         }
-        if (transformation.kind === "zoom") {
-            obj = transformZoom(obj, transformation.values);
+        if (transformation.kind === "scale") {
+            obj = transformScale(obj, transformation.values);
         }
         if (transformation.kind === "rotate") {
             obj = transformRotate(obj, transformation.values);
@@ -54,7 +54,7 @@ function transformRotate(obj, values) {
 
 // ********************************************************************************************
 // Transform ZOOM
-function transformZoom(obj, values) {
+function transformScale(obj, values) {
     //rok-todo: fehlt
     return obj;
 }

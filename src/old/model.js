@@ -88,7 +88,7 @@ class Model {
     // ********************************************************************************************
     // Transform element
     move(guid, values, groupGuid) { this.transform(guid, "move", values, groupGuid); }
-    zoom(guid, values, groupGuid) { this.transform(guid, "zoom", values, groupGuid); }
+    scale(guid, values, groupGuid) { this.transform(guid, "scale", values, groupGuid); }
     rotate(guid, values, groupGuid) { this.transform(guid, "rotate", values, groupGuid); }
     origin(guid, values, groupGuid) { this.transform(guid, "origin", values, groupGuid); }
     transform(guid, kind, values, groupGuid) {

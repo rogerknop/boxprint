@@ -11,6 +11,7 @@ class Model {
     #id;
     #parts = [];
     #locked = false;
+    #transform = [];
 
     // ********************************************************************************************
     // Constructor
@@ -24,9 +25,25 @@ class Model {
         if (this.#locked) {
             throw new Error("Model " + this.#id + " is already rendered. Union is no more possible!");
         }
+        //if (!(part instanceof Part)) {
+        //    throw new Error("Model " + this.#id + " tried to union a NON Part Class Object!");
+        //}
         part.setAction("union");
         part.setParent(this);
         this.#parts.push(part);
+    }
+
+    // ********************************************************************************************
+    // Transform element
+    move(values) { this.transform("move", values); }
+    scale(values) { this.transform("scale", values); }
+    rotate(values) { this.transform("rotate", values); }
+    origin(values) { this.transform("origin", values); }
+    transform(kind, values) {
+        this.#transform.push({
+            kind: kind,
+            values: values
+        });
     }
 
     // ********************************************************************************************
@@ -35,6 +52,9 @@ class Model {
         if (this.#locked) {
             throw new Error("Model " + this.#id + " is already rendered. Subtract is no more possible!");
         }
+        //if (!(part instanceof Part)) {
+        //    throw new Error("Model " + this.#id + " tried to subtract a NON Part Class Object!");
+        //}
         part.setAction("subtract");
         part.setParent(this);
         this.#parts.push(part);
@@ -75,6 +95,8 @@ class Model {
         }
 
         this.#locked = true;
+
+        obj = utils.transformObject(obj, this.#transform);
 
         return obj;
     }

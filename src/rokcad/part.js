@@ -35,17 +35,35 @@ class Part {
     // ********************************************************************************************
     // Transform element
     move(values) { this.transform("move", values); }
-    zoom(values) { this.transform("zoom", values); }
+    scale(values) { this.transform("scale", values); }
     rotate(values) { this.transform("rotate", values); }
     origin(values) { this.transform("origin", values); }
     transform(kind, values) {
-        if (this.#parentModel.isLocked()) {
+        if (this.#parentModel?.isLocked()) {
             throw new Error("Model " + this.#parentModel.getId() + " is already rendered. Transformation is no more possible!");
         }
         this.#transform.push({
             kind: kind,
             values: values
         });
+    }
+
+    // ********************************************************************************************
+    // Align Parts
+    alignTo(fromPos, part, toPos) {
+        this.#transform.push({
+            kind: "alignTo",
+            fromPart: this,
+            fromPos: fromPos,
+            toPart: part,
+            toPos: toPos
+        });
+    }
+
+    // ********************************************************************************************
+    // Set Action
+    setAction(action) {
+        this.#action = action;
     }
 
     // ********************************************************************************************
@@ -73,13 +91,21 @@ class Part {
     }
 
     // ********************************************************************************************
+    // Get Object
+    getObject() {
+        return this.#object;
+    }
+
+    // ********************************************************************************************
     // Render Part (Element or Model)
-    render() {
+    render(dontremember) {
         if (this.#rendered) { return this.#object; }
-        this.#rendered = true;
         let obj = this.#part.render();
         obj = utils.transformObject(obj, this.#transform);
-        this.#object = obj;
+        //if (!dontremember) {
+            this.#rendered = true; 
+            this.#object = obj;
+        //}
         return obj;
     }
 

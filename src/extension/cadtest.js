@@ -20,20 +20,21 @@ class Extension {
         let model = new Model("main");
 
         const el1 = roundedCuboid({ size: [10, 5, 7], roundRadius: 0.3 });
+/*
+const el1Part = new Part(model, el1);
+el1Part.move({ x: 10 });
+el1Part.origin({ z: "max" });
+//el1Part.origin({ z: 0 });
+model.union(el1Part);
 
-        const el1Part = new Part(model, el1);
-        el1Part.move({ x: 10 });
-        el1Part.origin({ z: "max" });
-        //el1Part.origin({ z: 0 });
-        model.union(el1Part);
+const el2 = cuboid({ size: [5, 10, 7] });
+let el2Part = new Part(model, el2);
+model.union(el2Part);
 
-        const el2 = cuboid({ size: [5, 10, 7] });
-        let el2Part = new Part(model, el2);
-        model.union(el2Part);
-        
-        el2Part = new Part(model, el2);
-        el2Part.move({ y: 15 });
-        model.union(el2Part);
+el2Part = new Part(model, el2);
+el2Part.move({ y: 15 });
+model.union(el2Part);
+*/
 
         let screwGroup = new Model("screwGroup");
         const screwOuter = new Part(screwGroup, cylinder( {radius: 4, height: 5}) );
@@ -48,10 +49,21 @@ class Extension {
         model.union(screw);
 
         screw = new Part(model, screwGroup);
-        screw.rotate({ x: 45, y: 0, z: 0 });
-        screw.move({ x: 20, y: -20 });
+        //Rotate und Scale sollte immer zuerst erfolgen vor move oder origin
+        screw.rotate({ x: 0, y: 90, z: 0 });
+        screw.scale({ x: 2, y:1, z:2 });
         screw.origin({ z: "min" });
+        screw.move({ x: 20, y: 10 });
         model.union(screw);
+
+        let alignedScrew = new Part(model, screwGroup);
+        alignedScrew.move({ x: 16, y: -20 }); //Keine Relevant wegen folgendem alignTo
+        alignedScrew.move({ z: 10 }); //Keine Relevanz wegen folgendem Origin
+        alignedScrew.origin({ z: "min" });
+        alignedScrew.alignTo({x: "center", y: "center", z: "min"}, screw, {x: "center", y: "center", z: "max"});
+        model.union(alignedScrew);
+
+        //model.origin({ z: "min" });
 
         obj.computed.freestyle = model.render();
     }
