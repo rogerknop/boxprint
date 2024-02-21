@@ -20,21 +20,19 @@ class Extension {
         let model = new Model("main");
 
         const el1 = roundedCuboid({ size: [10, 5, 7], roundRadius: 0.3 });
-/*
-const el1Part = new Part(model, el1);
-el1Part.move({ x: 10 });
-el1Part.origin({ z: "max" });
-//el1Part.origin({ z: 0 });
-model.union(el1Part);
+        const el1Part = new Part(model, el1);
+        el1Part.move({ x: 10 });
+        el1Part.origin({ z: "max" });
+        //el1Part.origin({ z: 0 });
+        model.union(el1Part);
 
-const el2 = cuboid({ size: [5, 10, 7] });
-let el2Part = new Part(model, el2);
-model.union(el2Part);
+        const el2 = cuboid({ size: [5, 10, 7] });
+        let el2Part = new Part(model, el2);
+        model.union(el2Part);
 
-el2Part = new Part(model, el2);
-el2Part.move({ y: 15 });
-model.union(el2Part);
-*/
+        el2Part = new Part(model, el2);
+        el2Part.move({ y: 15 });
+        model.union(el2Part);
 
         let screwGroup = new Model("screwGroup");
         const screwOuter = new Part(screwGroup, cylinder( {radius: 4, height: 5}) );
@@ -63,7 +61,8 @@ model.union(el2Part);
         alignedScrew.alignTo({x: "center", y: "center", z: "min"}, screw, {x: "center", y: "center", z: "max"});
         model.union(alignedScrew);
 
-        //model.origin({ z: "min" });
+        //Dies bewirkt am Ende, dass das komplette Modell auf den "Boden" gestellt wird
+        model.origin({ z: "min" });
 
         obj.computed.freestyle = model.render();
     }

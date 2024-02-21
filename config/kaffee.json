@@ -1,0 +1,12 @@
+{
+    "name": "Kaffee Milchhalter",
+    "techName": "kaffee",
+    "type": "freestyle",
+    "modelData": {
+        "lowerInnerDiameter": 10.5,
+        "lowerHeight": 7.5,
+        "upperInnerDiameter": 7.3,
+        "upperHeight": 7.5,
+        "thickness": 1
+    }
+}
