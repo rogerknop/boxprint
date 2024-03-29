@@ -2,7 +2,7 @@ const Part = require('./part');
 const utils = require('./utils');
 
 const jscad = require('@jscad/modeling');
-const { subtract, union } = jscad.booleans;
+const { subtract, union, intersect } = jscad.booleans;
 const { center, rotate } = jscad.transforms;
 const { degToRad } = jscad.utils;
 const { measureDimensions, measureCenter, measureBoundingBox } = jscad.measurements;
@@ -20,6 +20,19 @@ class Model {
     }
 
     // ********************************************************************************************
+    // Transform element
+    move(values) { this.transform("move", values); }
+    scale(values) { this.transform("scale", values); }
+    rotate(values) { this.transform("rotate", values); }
+    origin(values) { this.transform("origin", values); }
+    transform(kind, values) {
+        this.#transform.push({
+            kind: kind,
+            values: values
+        });
+    }
+    
+    // ********************************************************************************************
     // Create new Part
     union(part) {
         if (this.#locked) {
@@ -34,19 +47,6 @@ class Model {
     }
 
     // ********************************************************************************************
-    // Transform element
-    move(values) { this.transform("move", values); }
-    scale(values) { this.transform("scale", values); }
-    rotate(values) { this.transform("rotate", values); }
-    origin(values) { this.transform("origin", values); }
-    transform(kind, values) {
-        this.#transform.push({
-            kind: kind,
-            values: values
-        });
-    }
-
-    // ********************************************************************************************
     // Subtract element from model
     subtract(part) {
         if (this.#locked) {
@@ -56,6 +56,20 @@ class Model {
         //    throw new Error("Model " + this.#id + " tried to subtract a NON Part Class Object!");
         //}
         part.setAction("subtract");
+        part.setParent(this);
+        this.#parts.push(part);
+    }
+
+    // ********************************************************************************************
+    // Intersect element from model
+    intersect(part) {
+        if (this.#locked) {
+            throw new Error("Model " + this.#id + " is already rendered. Intersect is no more possible!");
+        }
+        //if (!(part instanceof Part)) {
+        //    throw new Error("Model " + this.#id + " tried to intersect a NON Part Class Object!");
+        //}
+        part.setAction("intersect");
         part.setParent(this);
         this.#parts.push(part);
     }
@@ -88,8 +102,11 @@ class Model {
                 if (part.getAction() === "union") {
                     obj = union(obj, partObj);
                 }
-                else {
+                if (part.getAction() === "subtract") {
                     obj = subtract(obj, partObj);
+                }
+                if (part.getAction() === "intersect") {
+                    obj = intersect(obj, partObj);
                 }
             }
         }

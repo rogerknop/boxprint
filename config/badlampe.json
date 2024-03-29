@@ -1,0 +1,10 @@
+{
+    "name": "Badlampe",
+    "techName": "badlampe",
+    "type": "freestyle",
+    "modelData": {
+        "innerDiameter": 33, 
+        "height": 65,
+        "thickness": 2 
+    }
+}

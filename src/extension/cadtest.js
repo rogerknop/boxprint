@@ -19,15 +19,34 @@ class Extension {
         
         let model = new Model("main");
 
-        const el1 = roundedCuboid({ size: [10, 5, 7], roundRadius: 0.3 });
+        const el1 = roundedCuboid({ size: [10, 5, 3], roundRadius: 0.7 });
         const el1Part = new Part(model, el1);
         el1Part.move({ x: 10 });
-        el1Part.origin({ z: "max" });
+        el1Part.origin({ z: "min" });
         //el1Part.origin({ z: 0 });
         model.union(el1Part);
 
+        let box = new Model("box");
+        const aussen = new Part(box, roundedCuboid({ size: [obj.width, obj.depth, obj.height], roundRadius: obj.rounded }));        
+        aussen.origin({ z: "min" });
+        box.union(aussen);
+
+        const innen = new Part(box, cuboid({ size: [obj.width-(2*obj.thickness), obj.depth-(2*obj.thickness), obj.height-(1*obj.thickness)] }));
+        innen.alignTo({x: "center", y: "center", z: "max"}, aussen, {x: "center", y: "center", z: "max"});
+        box.subtract(innen);
+
+        const corner = new Part(box, cylinder( {radius: obj.cornerRound, height: obj.height}) );
+        corner.move({ x: (obj.width/2)-obj.cornerRound, y: (obj.depth/2)-obj.cornerRound });
+        //box.intersect(corner);
+
+        let boxPart = new Part(model, box);
+        boxPart.origin({ z: "min" });
+        boxPart.move({ x: 100, y: 100 });
+        model.union(boxPart);
+
         const el2 = cuboid({ size: [5, 10, 7] });
         let el2Part = new Part(model, el2);
+        //el2Part.origin({ z: "min" }); IST DEFAULT
         model.union(el2Part);
 
         el2Part = new Part(model, el2);
@@ -36,10 +55,8 @@ class Extension {
 
         let screwGroup = new Model("screwGroup");
         const screwOuter = new Part(screwGroup, cylinder( {radius: 4, height: 5}) );
-        screwOuter.origin({ z: "min" });
         screwGroup.union(screwOuter);
         const screwHole = new Part(screwGroup, cylinder( {radius: 2, height: 5}) );
-        screwHole.origin({ z: "min" });
         screwGroup.subtract(screwHole);
         
         let screw = new Part(model, screwGroup);

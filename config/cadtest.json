@@ -3,14 +3,11 @@
     "techName": "cadtest",
     "type": "freestyle",
     "modelData": {
-        "width": 30, //40
-        "rackDiameter": 16.5,
-        "innerLength": 35.5,
-        "thickness": 3.5,
-        "rounded": 6,
-        "gapLength": 28,//28,
-        "gapRoundedRadius"     : 2.6,
-        "gapRoundedMoveOutside": 1,
-        "gapRoundedMoveEdge"   : 0.2
+        "width": 40, //kurze Seite
+        "depth": 60, //lange Seite
+        "height": 10,
+        "thickness": 1.5, 
+        "rounded": 0.7,
+        "cornerRound": 3
     }
 }

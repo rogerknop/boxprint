@@ -16,6 +16,10 @@
             "width": 1.5,
             "shift" : 0
         },
+        "socketLid": {
+            "active": true,
+            "only2" : true
+        },
         "socketBreadboard": {
             //Lochraster (Breadboard) 2.54mm Abstand
             "active": true,
@@ -76,7 +80,7 @@
                     "position": "b" , //f=front / b=back / l=left / r=right / g=round
                     "shape": "c",     //c=circle / r=rectangle
                     "radius": 4,
-                    "shiftWidth": -12,
+                    "shiftWidth": -8,
                     "shiftHeight": 9
                 }
             ]
