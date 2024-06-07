@@ -15,10 +15,10 @@ class Extension {
 
         let model = new Model("main");
 
-        const lampOuter = new Part(model, cylinder( {radius: (obj.innerDiameter+(2*obj.thickness))/2, height: obj.height}) );
+        const lampOuter = new Part(model, cylinder( {radius: (obj.innerDiameter+(2*obj.thickness))/2, height: obj.height, segments: 300}) );
         lampOuter.origin({ z: "min" });
         model.union(lampOuter);
-        const lampHole = new Part(model, cylinder( {radius: obj.innerDiameter/2, height: obj.height}) );
+        const lampHole = new Part(model, cylinder( {radius: obj.innerDiameter/2, height: obj.height, segments: 300}) );
         lampHole.origin({ z: "min" });
         model.subtract(lampHole);
 

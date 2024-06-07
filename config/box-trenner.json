@@ -1,0 +1,11 @@
+{
+    "name": "Box Trennwand",
+    "techName": "box-trenner",
+    "type": "freestyle",
+    "modelData": {
+        "length": 35, //helmi grosse box 40
+        "height": 22, //helmi grosse box 25
+        "bottomWidth": 8,
+        "thickness": 1 
+    }
+}

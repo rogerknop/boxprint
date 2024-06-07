@@ -1,0 +1,74 @@
+{
+    "name": "Helmi Rollo",
+    "techName": "helmi-rollo",
+    "type": "box",
+    "modelData": {
+        "width": 65, //kurze Seite
+        "depth": 95, //lange Seite
+        "height": 35,
+        "thickness": 1.5, 
+        "rounded": 0.4,
+        "lidReduce": 0.05,
+        "outerScrews": true,
+        "ventilation": {
+            "active": true,
+            "count": 4,
+            "lengthPercent": 0.6,
+            "width": 2.5,
+            "shift" : 0
+        },
+        "socketLid": {
+            "active": true,
+            "only2" : true
+        },
+        "holeControl": {
+            "active": true,
+            "holes": [
+                {
+                    "active": true,
+                    "position": "l" , //f=front / b=back / l=left / r=right / g=round / t=top (=lid)
+                    "shape": "r", //c=circle / r=rectangle
+                    "width": 10,
+                    "depth": 5,
+                    //Shift vom Mittelpunkt
+                    "shiftWidth": 30,
+                    "shiftHeight": -13.8
+                },
+                {
+                    "active": true,
+                    "position": "l" , //f=front / b=back / l=left / r=right / g=round / t=top (=lid)
+                    "shape": "r", //c=circle / r=rectangle
+                    "width": 10,
+                    "depth": 5,
+                    //Shift vom Mittelpunkt
+                    "shiftWidth": -32,
+                    "shiftHeight": -13.8
+                },
+                {
+                    "active": true,
+                    "position": "l" , //f=front / b=back / l=left / r=right / g=round / t=top (=lid)
+                    "shape": "r", //c=circle / r=rectangle
+                    "width": 10,
+                    "depth": 5,
+                    //Shift vom Mittelpunkt
+                    "shiftWidth": -15,
+                    "shiftHeight": -13.8
+                }
+            ]
+        },
+        "screw": {
+            //Diese Werte am Besten nicht verändern! Definiert den Schraublöcher
+            "outerRadius": 2.5,
+            "innerRadius": 1.5
+        },
+        "clickx": true, // => Dann wird immer berechnet / false=kein Click
+        "click": {
+            "active": true,
+            "compute": true, // So kann man die Werte überschreiben
+            "lidThickness": 2,
+            "radius": 0.5,
+            "heightCorpus": 9,
+            "heightLid": 10
+        }
+    }
+}
