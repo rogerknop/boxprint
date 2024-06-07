@@ -1,0 +1,13 @@
+{
+    "name": "Frästisch Einlegering",
+    "techName": "fraesring",
+    "type": "freestyle",
+    "modelData": {
+        "outerDiameter": 68, 
+        "innerDiameter": 18, 
+        "height": 4,
+        "screwOuterDistance": 2,
+        "screwDiameter": 12,
+        "screwHoleHeight": 2 
+    }
+}
