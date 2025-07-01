@@ -54,7 +54,7 @@ class Clamp {
         result = union(result, c);
 
         //Schraub Teil
-        let lochabstand = 2.54;
+        let lochabstand = 2.542372881355932;
         let holeWidth = (Math.floor( (this.width + (thickness*2) + 7) / lochabstand) * lochabstand);
         let screwWidth = holeWidth + 7;
         let screw = roundedCuboid({size: [screwWidth, 7, thickness], center: [0, 0, thickness/2], roundRadius: 0.1});
