@@ -1,0 +1,80 @@
+{
+    "name": "Master Slave CR123A",
+    "techName": "masterslavecr123",
+    "type": "box",
+    "modelData": {
+        "width": 90, //kurze Seite
+        "depth": 90, //lange Seite
+        "height": 40,
+        "thickness": 2, 
+        "rounded": 0.7,
+        "lidReduce": 0.05,
+        "outerScrews": false,
+        "ventilation": {
+            "active": false,
+            "count": 4,
+            "lengthPercent": 0.6,
+            "width": 2.5,
+            "shift" : 0
+        },
+        "socketLid": {
+            "active": true,
+            "only2" : false
+        },
+        "socketEsp": {
+            "active": true,
+            "model": "lolin_nodemcu_v3",
+            "height": 15,
+            "rotate": false,
+            "shiftWidth": 26,
+            "shiftDepth": 0
+        },
+        "holeControl": {
+            "active": true,
+            "holes": [
+                {
+                    "active": true,
+                    "position": "t",   //f=front / b=back / l=left / r=right / g=round / t=top (=lid)
+                    "shape": "c", //c=circle / r=rectangle
+                    "radius": 3.3,
+                    //Shift vom Mittelpunkt
+                    "shiftWidth": 28,
+                    "shiftDepth": 0
+                },
+                {
+                    "active": true,
+                    "position": "t",   //f=front / b=back / l=left / r=right / g=round / t=top (=lid)
+                    "shape": "c", //c=circle / r=rectangle
+                    "radius": 3.3,
+                    //Shift vom Mittelpunkt
+                    "shiftWidth": -28,
+                    "shiftDepth": 0
+                },
+                {
+                    "active": true,
+                    "position": "t",   //f=front / b=back / l=left / r=right / g=round / t=top (=lid)
+                    "shape": "c", //c=circle / r=rectangle
+                    "radius": 7.6,
+                    //Shift vom Mittelpunkt
+                    "shiftWidth": 0,
+                    "shiftDepth": 0
+                },
+                {
+                    "active": true,
+                    "position": "f",   //f=front / b=back / l=left / r=right / g=round / t=top (=lid)
+                    "shape": "c", //c=circle / r=rectangle
+                    "radius": 10,
+                    //Shift vom Mittelpunkt
+                    "shiftWidth": 20,
+                    "shiftHeight": 5
+                }
+            ]
+        },
+        "screw": {
+            //Diese Werte am Besten nicht verändern! Definiert den Schraublöcher
+            "outerRadius": 2.5,
+            "innerRadius": 1.5
+        },
+        "click": true // => Dann wird immer berechnet / false=kein Click
+    }
+}

@@ -493,7 +493,7 @@ class Box {
         if (this.socket.maxWidth>0) { socketWidth = this.socket.maxWidth / 2; }
         else { socketWidth = (this.width/2) - this.thickness - this.screw.outerRadius - 4; }
         //socketDepth und socketWidth auf Lochabstand der Platine normalisieren
-        let lochabstand = 2.54;
+        let lochabstand = 2.542372881355932; //Lochabstand 2.54cm mit Rundungsdifferenzen
         socketDepth = (Math.floor( (socketDepth*2) / lochabstand) * lochabstand) / 2;
         socketWidth = (Math.floor( (socketWidth*2) / lochabstand) * lochabstand) / 2;
         let shiftDepth = this.socket.shiftDepth;

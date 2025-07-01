@@ -129,13 +129,13 @@
             "heightLid": 10
         },
         "textControl": {
-            "active": false,
+            "active": true,
             "texts": [
                 {
                     "active": true,
                     "text": "Rogi\nKnobi",
                     "position": "g",   //g=round / t=top (=lid) / Seiten testen
-                    "inside": true,
+                    "inside": false,
                     "union": false,
                     "fontSize": 4,
                     "lineThickness": 0.8,
@@ -153,7 +153,7 @@
                     "active": true,
                     "text": "Rogi",
                     "position": "f",   //g=round / t=top (=lid) / Seiten testen
-                    "inside": true,
+                    "inside": false,
                     "union": true,
                     "fontSize": 2,
                     "lineThickness": 0.2,
@@ -171,8 +171,8 @@
                     "active": true,
                     "text": "Rogi",
                     "position": "t",   //g=round / t=top (=lid) / Seiten testen
-                    "inside": true,
-                    "union": false,
+                    "inside": false,
+                    "union": true,
                     "fontSize": 2,
                     "lineThickness": 0.3,
                     "extrudeHeight": 0.8,

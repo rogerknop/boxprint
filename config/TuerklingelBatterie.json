@@ -1,0 +1,97 @@
+{
+    "name": "Türklingel CR123A",
+    "techName": "tuerklingelcr123",
+    "type": "box",
+    "modelData": {
+        "width": 95, //kurze Seite
+        "depth": 120, //lange Seite
+        "height": 40,
+        "thickness": 2, 
+        "rounded": 0.7,
+        "lidReduce": 0.05,
+        "outerScrews": false,
+        "ventilation": {
+            "active": false,
+            "count": 4,
+            "lengthPercent": 0.6,
+            "width": 2.5,
+            "shift" : 0
+        },
+        "socketBreadboard": {
+            //Lochraster (Breadboard) 2.54mm Abstand
+            "active": true,
+            "height": 7,
+            "maxWidth": 65,  //0=max. Width
+            "maxDepth": 105,  //0=max. Depth
+            "shiftWidth": -8,
+            "shiftDepth": 0
+        },
+        "socketLid": {
+            "active": false,
+            "only2" : false
+        },
+        "socketEsp": {
+            "active": false,
+            "model": "lolin_nodemcu_v3",
+            "height": 15,
+            "rotate": false,
+            "shiftWidth": 26,
+            "shiftDepth": 0
+        },
+        "holeControl": {
+            "active": true,
+            "holes": [
+            {
+                    "active": true,
+                    "position": "l",   //f=front / b=back / l=left / r=right / g=round
+                    "shape": "r",      //c=circle / r=rectangle
+                    "width": 55,
+                    "depth": 31,
+                    "shiftWidth": -14,
+                    "shiftHeight": -2
+                },
+                {
+                    "active": true,
+                    "position": "l",   //f=front / b=back / l=left / r=right / g=round
+                    "shape": "r",      //c=circle / r=rectangle
+                    "width": 68,
+                    "depth": 14,
+                    "shiftWidth": -14,
+                    "shiftHeight": -2
+                },                {
+                    "active": true,
+                    "position": "t",   //f=front / b=back / l=left / r=right / g=round / t=top (=lid)
+                    "shape": "c", //c=circle / r=rectangle
+                    "radius": 3.3,
+                    //Shift vom Mittelpunkt
+                    "shiftWidth": 0,
+                    "shiftDepth": -24
+                },
+                {
+                    "active": true,
+                    "position": "t",   //f=front / b=back / l=left / r=right / g=round / t=top (=lid)
+                    "shape": "c", //c=circle / r=rectangle
+                    "radius": 3.3,
+                    //Shift vom Mittelpunkt
+                    "shiftWidth": 0,
+                    "shiftDepth": 24
+                },
+                {
+                    "active": true,
+                    "position": "l",   //f=front / b=back / l=left / r=right / g=round / t=top (=lid)
+                    "shape": "c", //c=circle / r=rectangle
+                    "radius": 10,
+                    //Shift vom Mittelpunkt
+                    "shiftWidth": 40,
+                    "shiftHeight": 4
+                }
+            ]
+        },
+        "screw": {
+            //Diese Werte am Besten nicht verändern! Definiert den Schraublöcher
+            "outerRadius": 2.5,
+            "innerRadius": 1.5
+        },
+        "click": true // => Dann wird immer berechnet / false=kein Click
+    }
+}
