@@ -7,7 +7,7 @@ const objSerializer = require('@jscad/obj-serializer');
 
 const { roundedCuboid, cuboid, rectangle, roundedRectangle, square, polygon, cylinder } = jscad.primitives;
 const { subtract, union } = jscad.booleans;
-const { center, rotate } = jscad.transforms;
+const { center, rotate, mirrorX, mirrorY, mirrorZ} = jscad.transforms;
 const { degToRad } = jscad.utils;
 const { extrudeLinear, extrudeRectangular } = jscad.extrusions;
 const { vectorText } = jscad.text;
@@ -661,6 +661,8 @@ class Box {
         let textWidth  = bounds[1][0] - bounds[0][0];
         let textHeight = bounds[1][1] - bounds[0][1];
 
+        let spiegeln = false;
+
         if (text.alignAnkerX == "left")   {  text.shiftWidth = text.shiftWidth + (textWidth / 2);  } 
         if (text.alignAnkerX == "right")  {  text.shiftWidth = text.shiftWidth - (textWidth / 2);  } 
 
@@ -708,15 +710,30 @@ class Box {
             this.addLog(logNr+2, "    . Position Boden");
         }
         if (text.position=="t") {
-            text.inside=true;
+            //text.inside=true;
             rotateX=0;
             rotateY=0;
             rotateZ=0 + text.rotate;
             width=text.shiftWidth;
             depth=text.shiftDepth;
             height=text.extrudeHeight/2 + this.computed.lid_thickness_complete;
-            if (!text.union) { height-=text.extrudeHeight/2; }
+
+            if (!text.inside) { 
+                height = height - this.computed.lid_thickness_complete - ((this.thickness + text.extrudeHeight)/2);
+                if (!text.union) { 
+                   height = height + text.extrudeHeight - (text.lineThickness/2); 
+                   //height+=text.extrudeHeight;
+                }
+                spiegeln = true;
+            }
+            else {
+                if (!text.union) { height-=text.extrudeHeight/2; }
+            }
             this.addLog(logNr+2, "    . Position Deckel");
+        }
+
+        if (spiegeln) {
+            textShape = mirrorX(textShape);
         }
 
         textShape = rotate([degToRad(rotateX), degToRad(rotateY), degToRad(rotateZ)], textShape);

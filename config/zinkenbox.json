@@ -1,0 +1,56 @@
+{
+    "name": "ZinkenBox",
+    "techName": "zinkenbox",
+    "type": "box",
+    "modelData": {
+        "width": 80, //kurze Seite
+        "depth": 100, //lange Seite
+        "height": 80,
+        "thickness": 1.5, 
+        "rounded": 0.7,
+        "lidReduce": 0.05,
+        "outerScrews": false,
+        "ventilation": {
+            "active": false,
+            "count": 4,
+            "lengthPercent": 0.6,
+            "width": 2.5,
+            "shift" : 0
+        },
+        "socketLid": {
+            "active": false,
+            "only2" : true
+        },
+
+        "screw": {
+            //Hier wird screw für die Fräser missbraucht und um height ergänzt
+            "outerRadius": 7,
+            "innerRadius": 4.03,
+            "height": 20
+        },
+        "click": true, // => Dann wird immer berechnet / false=kein Click
+        "textControl": {
+            "active": true,
+            "texts": [
+                {
+                    "active": true,
+                    "text": "ZinkenBox\nFD600",
+                    "position": "t",   //g=round / t=top (=lid) / Seiten testen
+                    "inside": false,
+                    "union": false,
+                    "fontSize": 5,
+                    "lineThickness": 0.4,
+                    "extrudeHeight": 1,
+                    "rotate": 0,
+                    "alignAnkerX": "center",   //left / center /right
+                    "alignAnkerY": "center",   //top / center / bottom
+                    "alignMultiline": "center",
+                    //Shift vom Mittelpunkt
+                    "shiftWidth": 0,
+                    "shiftDepth": 0,
+                    "shiftHeight": -1.2
+                }
+            ]
+        }
+    }
+}
