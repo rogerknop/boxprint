@@ -1,0 +1,73 @@
+{
+    "name": "Wemos D1 Mini mit Button (Helmi Garage)",
+    "techName": "wemosbutton",
+    "type": "box",
+    "modelData": {
+        "width": 55, //kurze Seite
+        "depth": 55, //lange Seite
+        "height": 55,
+        "thickness": 1.5, 
+        "rounded": 0.7,
+        "lidReduce": 0.05,
+        "outerScrews": false,
+        "ventilation": {
+            "active": false,
+            "count": 4,
+            "lengthPercent": 0.6,
+            "width": 2.5,
+            "shift" : 0
+        },
+        "holeControl": {
+            "active": true,
+            "holes": [
+                {
+                    "active": true,
+                    "position": "f" , //f=front / b=back / l=left / r=right / g=round / t=top (=lid)
+                    "shape": "r", //c=circle / r=rectangle
+                    "width": 18,
+                    "depth": 13,
+                    //Shift vom Mittelpunkt
+                    "shiftWidth": 0,
+                    "shiftHeight": -19
+                },
+                {
+                    "active": true,
+                    "position": "t" , //f=front / b=back / l=left / r=right / g=round / t=top (=lid)
+                    "shape": "c", //c=circle / r=rectangle
+                    "radius": 14.15,
+                    //Shift vom Mittelpunkt
+                    "shiftWidth": 0,
+                    "shiftDepth": 0
+                }
+            ]
+        },
+        "socketLid": {
+            "active": false,
+            "only2" : true
+        },
+        "click": true, // => Dann wird immer berechnet / false=kein Click
+        "textControl": {
+            "active": false,
+            "texts": [
+                {
+                    "active": true,
+                    "text": "Garage",
+                    "position": "t",   //g=round / t=top (=lid) / Seiten testen
+                    "inside": false,
+                    "union": false,
+                    "fontSize": 3,
+                    "lineThickness": 0.4,
+                    "extrudeHeight": 1,
+                    "rotate": 0,
+                    "alignAnkerX": "center",   //left / center /right
+                    "alignAnkerY": "center",   //top / center / bottom
+                    "alignMultiline": "center",
+                    //Shift vom Mittelpunkt
+                    "shiftWidth": 0,
+                    "shiftDepth": 0,
+                    "shiftHeight": -1.2
+                }
+            ]
+        }
+    }
+}

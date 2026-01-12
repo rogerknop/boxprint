@@ -108,6 +108,12 @@ class Box {
         if (this.socketEsp?.active) {
             result = this.addSocketEsp(result);
         }
+        if (this.socketWemosHalter?.active) {
+            result = this.addSocketWemosHalter(result);
+        }
+        if (this.socketRelais?.active) {
+            result = this.addSocketRelais(result);
+        }
 
         if (this.outerScrews) {
             let screw_width = 10;
@@ -531,6 +537,73 @@ class Box {
         if (this.socket.model=="lolin_nodemcu_v3") {
             socketWidth = 25; 
             socketDepth = 52; 
+        }
+
+        socketDepth = socketDepth / 2;
+        socketWidth = socketWidth / 2;
+        let shiftDepth = this.socket.shiftDepth;
+        let shiftWidth = this.socket.shiftWidth;
+        
+        if (this.socket.rotate) {
+            let h=socketDepth; socketDepth=socketWidth; socketWidth=h;
+        }
+
+        let s = center({relativeTo: [socketWidth+shiftWidth, socketDepth+shiftDepth, socket_height]}, screwSocket);
+        result = union(result, s);
+        s = center({relativeTo: [socketWidth+shiftWidth, -socketDepth+shiftDepth, socket_height]}, screwSocket);
+        result = union(result, s);
+        s = center({relativeTo: [-socketWidth+shiftWidth, -socketDepth+shiftDepth, socket_height]}, screwSocket);
+        result = union(result, s);
+        s = center({relativeTo: [-socketWidth+shiftWidth, socketDepth+shiftDepth, socket_height]}, screwSocket);
+        result = union(result, s);
+        
+        return result;
+    }
+
+    //-----------------------------------------------------------------------------------------------------------------
+    addSocketWemosHalter(result) {
+        //Für generische schneidbare Platinen
+        this.socket = this.socketWemosHalter;
+        let screwSocket = this.getScrewSocket(this.socket.height);
+        let socket_height = this.thickness+(this.socket.height/2);
+        
+        let socketDepth; 
+        let socketWidth;
+
+        if (this.socket.model=="wemos_d1_mini_1") {
+            socketWidth = 37; 
+            socketDepth = 0; 
+        }
+
+        socketWidth = socketWidth / 2;
+        let shiftDepth = this.socket.shiftDepth;
+        let shiftWidth = this.socket.shiftWidth;
+        
+        if (this.socket.rotate) {
+            let h=socketDepth; socketDepth=socketWidth; socketWidth=h;
+        }
+
+        let s = center({relativeTo: [socketWidth+shiftWidth, socketDepth+shiftDepth, socket_height]}, screwSocket);
+        result = union(result, s);
+        s = center({relativeTo: [-socketWidth+shiftWidth, -socketDepth+shiftDepth, socket_height]}, screwSocket);
+        result = union(result, s);
+        
+        return result;
+    }
+    
+    //-----------------------------------------------------------------------------------------------------------------
+    addSocketRelais(result) {
+        //Für generische schneidbare Platinen
+        this.socket = this.socketRelais;
+        let screwSocket = this.getScrewSocket(this.socket.height);
+        let socket_height = this.thickness+(this.socket.height/2);
+        
+        let socketDepth; 
+        let socketWidth;
+
+        if (this.socket.model=="runcci_yun_1channel_5v") {
+            socketWidth = 20; 
+            socketDepth = 45; 
         }
 
         socketDepth = socketDepth / 2;

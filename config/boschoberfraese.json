@@ -1,0 +1,49 @@
+{
+    "name": "Bosch Oberfräse Schrauben",
+    "techName": "boschoberfraese",
+    "type": "box",
+    "modelData": {
+        "width": 60, //kurze Seite
+        "depth": 40, //lange Seite
+        "height": 20,
+        "thickness": 1.5, 
+        "rounded": 0.7,
+        "lidReduce": 0.05,
+        "outerScrews": false,
+        "ventilation": {
+            "active": false,
+            "count": 4,
+            "lengthPercent": 0.6,
+            "width": 2.5,
+            "shift" : 0
+        },
+        "socketLid": {
+            "active": false,
+            "only2" : true
+        },
+        "click": true, // => Dann wird immer berechnet / false=kein Click
+        "textControl": {
+            "active": true,
+            "texts": [
+                {
+                    "active": true,
+                    "text": "Bosch\nPOF 1200 AE",
+                    "position": "t",   //g=round / t=top (=lid) / Seiten testen
+                    "inside": false,
+                    "union": false,
+                    "fontSize": 3,
+                    "lineThickness": 0.4,
+                    "extrudeHeight": 1,
+                    "rotate": 0,
+                    "alignAnkerX": "center",   //left / center /right
+                    "alignAnkerY": "center",   //top / center / bottom
+                    "alignMultiline": "center",
+                    //Shift vom Mittelpunkt
+                    "shiftWidth": 0,
+                    "shiftDepth": 0,
+                    "shiftHeight": -1.2
+                }
+            ]
+        }
+    }
+}

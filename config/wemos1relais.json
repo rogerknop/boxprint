@@ -1,0 +1,97 @@
+{
+
+    //rok-todo: Höhe anpassen für Relais-Modul & Breiten anpassen in box.js
+    "name": "Wemos D1 Mini mit 1-Relais (Helmi Garage)",
+    "techName": "wemos1relais",
+    "type": "box",
+    "modelData": {
+        "width": 80, //kurze Seite
+        "depth": 67, //lange Seite
+        "height": 32,
+        "thickness": 1.5, 
+        "rounded": 0.7,
+        "lidReduce": 0.05,
+        "outerScrews": true,
+        "ventilation": {
+            "active": true,
+            "count": 4,
+            "lengthPercent": 0.6,
+            "width": 2.5,
+            "shift" : 0
+        },
+        "socketWemosHalter": {
+            "active": true,
+            "model": "wemos_d1_mini_1",
+            "height": 8,
+            "rotate": false,
+            "shiftWidth": -16,
+            "shiftDepth": 11
+        },
+        "socketRelais": {
+            "active": true,
+            "model": "runcci_yun_1channel_5v",
+            "height": 8,
+            "rotate": false,
+            "shiftWidth": 22,
+            "shiftDepth": 0
+        },
+        "holeControl": {
+            "active": true,
+            "holes": [
+                {
+                    "active": true,
+                    "position": "f" , //f=front / b=back / l=left / r=right / g=round / t=top (=lid)
+                    "shape": "r", //c=circle / r=rectangle
+                    "width": 18,
+                    "depth": 13,
+                    //Shift vom Mittelpunkt
+                    "shiftWidth": 15,
+                    "shiftHeight": -6
+                },
+                {
+                    "active": true,
+                    "position": "f" , //f=front / b=back / l=left / r=right / g=round / t=top (=lid)
+                    "shape": "r", //c=circle / r=rectangle
+                    "width": 18,
+                    "depth": 13,
+                    //Shift vom Mittelpunkt
+                    "shiftWidth": -22,
+                    "shiftHeight": -6
+                }
+            ]
+        },
+        "socketLid": {
+            "active": false,
+            "only2" : true
+        },
+        "screw": {
+            //Diese Werte am Besten nicht verändern! Definiert den Schraublöcher
+            "outerRadius": 2.5,
+            "innerRadius": 1.5
+        },
+        "click": true, // => Dann wird immer berechnet / false=kein Click
+        "textControl": {
+            "active": true,
+            "texts": [
+                {
+                    "active": true,
+                    "text": "Garage",
+                    "position": "g",   //g=round / t=top (=lid) / Seiten testen
+                    "inside": false,
+                    "union": false,
+                    "fontSize": 3,
+                    "lineThickness": 0.4,
+                    "extrudeHeight": 1,
+                    "rotate": 90,
+                    "alignAnkerX": "center",   //left / center /right
+                    "alignAnkerY": "center",   //top / center / bottom
+                    "alignMultiline": "center",
+                    //Shift vom Mittelpunkt
+                    "shiftWidth": 4,
+                    "shiftDepth": -18,
+                    "shiftHeight": -1.2
+                }
+            ]
+        }
+    }
+}
