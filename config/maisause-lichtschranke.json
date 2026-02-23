@@ -1,0 +1,97 @@
+{
+    "name": "Maisause Lichtschranke",
+    "techName": "maisause-lichtschranke",
+    "type": "box",
+    "modelData": {
+        "width": 54, //kurze Seite
+        "depth": 73, //lange Seite
+        "height": 27,
+        "thickness": 2, 
+        "rounded": 0.7,
+        "lidReduce": 0.05,
+        "outerScrews": false,
+        "ventilation": {
+            "active": true,
+            "count": 2,
+            "lengthPercent": 0.7,
+            "width": 2,
+            "shift" : 0
+        },
+        "socketBreadboard": {
+            //Lochraster (Breadboard) 2.54mm Abstand
+            "active": true,
+            "height": 5,
+            "maxWidth": 41,  //0=max. Width
+            "maxDepth": 59,  //0=max. Depth
+            "shiftWidth": 0,
+            "shiftDepth": 0
+        },
+        "holeControl": {
+            "active": true,
+            "holes": [
+                {
+                    "active": true,
+                    "position": "f" , //f=front / b=back / l=left / r=right / g=round / t=top (=lid)
+                    "shape": "r", //c=circle / r=rectangle
+                    "width": 13,
+                    "depth": 8,
+                    //Shift vom Mittelpunkt
+                    "shiftWidth": -3,
+                    "shiftHeight": 0
+                },
+                {
+                    "active": true,
+                    "position": "b" , //f=front / b=back / l=left / r=right / g=round / t=top (=lid)
+                    "shape": "r", //c=circle / r=rectangle
+                    "width": 12,
+                    "depth": 9,
+                    //Shift vom Mittelpunkt
+                    "shiftWidth": 12,
+                    "shiftHeight": -2
+                },
+                {
+                    "active": true,
+                    "position": "t" , //f=front / b=back / l=left / r=right / g=round / t=top (=lid)
+                    "shape": "c", //c=circle / r=rectangle
+                    "radius": 3.6,
+                    //Shift vom Mittelpunkt
+                    "shiftWidth": 18.5,
+                    "shiftDepth": 0
+                }
+            ]
+        },
+        "socketLid": {
+            "active": false,
+            "only2" : true
+        },
+        "screw": {
+            //Diese Werte am Besten nicht verändern! Definiert den Schraublöcher
+            "outerRadius": 2.5,
+            "innerRadius": 1.5
+        },
+        "click": true, // => Dann wird immer berechnet / false=kein Click
+        "textControl": {
+            "active": true,
+            "texts": [
+                {
+                    "active": true,
+                    "text": "Maisause",
+                    "position": "t",   //g=round / t=top (=lid) / Seiten testen
+                    "inside": false,
+                    "union": false,
+                    "fontSize": 3,
+                    "lineThickness": 0.4,
+                    "extrudeHeight": 1,
+                    "rotate": 90,
+                    "alignAnkerX": "center",   //left / center /right
+                    "alignAnkerY": "center",   //top / center / bottom
+                    "alignMultiline": "center",
+                    //Shift vom Mittelpunkt
+                    "shiftWidth": 0,
+                    "shiftDepth": 0,
+                    "shiftHeight": -1.2
+                }
+            ]
+        }
+    }
+}
