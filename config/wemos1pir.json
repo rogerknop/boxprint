@@ -1,0 +1,93 @@
+{
+    "name": "Wemos D1 Mini mit PIR (unterm Bett)",
+    "techName": "wemos1pir",
+    "type": "box",
+    "modelData": {
+        "width": 54, //kurze Seite
+        "depth": 54, //lange Seite
+        "height": 37,
+        "thickness": 2, 
+        "rounded": 0.7,
+        "lidReduce": 0.05,
+        "outerScrews": true,
+        "ventilation": {
+            "active": true,
+            "count": 8,
+            "lengthPercent": 0.2,
+            "width": 2,
+            "shift" : 18
+        },
+        "socketBreadboard": {
+            //Lochraster (Breadboard) 2.54mm Abstand
+            "active": true,
+            "height": 5,
+            "maxWidth": 41,  //0=max. Width
+            "maxDepth": 41,  //0=max. Depth
+            "shiftWidth": 0,
+            "shiftDepth": 0
+        },
+        "socketSingleScrewControl": {
+            "active": true,
+            "screws": [
+                {
+                    "active": true,
+                    "positionLid": true,
+                    "height": 3.5,
+                    "shiftWidth": -14.5,
+                    "shiftDepth": 0
+                },
+                {
+                    "active": true,
+                    "positionLid": true,
+                    "height": 4.5,
+                    "shiftWidth": 14.5,
+                    "shiftDepth": 0
+                }
+            ]
+        },
+        "holeControl": {
+            "active": true,
+            "holes": [
+                {
+                    "active": true,
+                    "position": "l" , //f=front / b=back / l=left / r=right / g=round / t=top (=lid)
+                    "shape": "r", //c=circle / r=rectangle
+                    "width": 13,
+                    "depth": 8,
+                    //Shift vom Mittelpunkt
+                    "shiftWidth": 0,
+                    "shiftHeight": -9
+                },
+                {
+                    "active": true,
+                    "position": "r" , //f=front / b=back / l=left / r=right / g=round / t=top (=lid)
+                    "shape": "r", //c=circle / r=rectangle
+                    "width": 12,
+                    "depth": 3,
+                    //Shift vom Mittelpunkt
+                    "shiftWidth": 0,
+                    "shiftHeight": -2
+                },
+                {
+                    "active": true,
+                    "position": "t" , //f=front / b=back / l=left / r=right / g=round / t=top (=lid)
+                    "shape": "c", //c=circle / r=rectangle
+                    "radius": 11.7,
+                    //Shift vom Mittelpunkt
+                    "shiftWidth": 0,
+                    "shiftDepth": 0
+                }
+            ]
+        },
+        "socketLid": {
+            "active": false,
+            "only2" : true
+        },
+        "screw": {
+            //Diese Werte am Besten nicht verändern! Definiert den Schraublöcher
+            "outerRadius": 2.5,
+            "innerRadius": 1.5
+        },
+        "click": true // => Dann wird immer berechnet / false=kein Click
+    }
+}

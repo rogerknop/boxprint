@@ -499,7 +499,8 @@ class Box {
         if (this.socket.maxWidth>0) { socketWidth = this.socket.maxWidth / 2; }
         else { socketWidth = (this.width/2) - this.thickness - this.screw.outerRadius - 4; }
         //socketDepth und socketWidth auf Lochabstand der Platine normalisieren
-        let lochabstand = 2.542372881355932; //Lochabstand 2.54cm mit Rundungsdifferenzen
+        //let lochabstand = 2.542372881355932; //Lochabstand 2.54cm mit Rundungsdifferenzen
+        let lochabstand = 2.54; //Lochabstand 2.54cm
         socketDepth = (Math.floor( (socketDepth*2) / lochabstand) * lochabstand) / 2;
         socketWidth = (Math.floor( (socketWidth*2) / lochabstand) * lochabstand) / 2;
         let shiftDepth = this.socket.shiftDepth;
@@ -509,8 +510,8 @@ class Box {
         this.addLog(30, "  - Lochraster Lochabstand Tiefe " + (socketDepth * 2).toFixed(2));
 
         //Druck Korrektur wegen Drucker Ungenauigkeiten
-        socketDepth -= 0.5;
-        socketWidth -= 0.5;
+        //socketDepth -= 0.5;
+        //socketWidth -= 0.5;
 
         let s = center({relativeTo: [socketWidth+shiftWidth, socketDepth+shiftDepth, socket_height]}, screwSocket);
         result = union(result, s);

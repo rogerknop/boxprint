@@ -14,7 +14,7 @@ function main () {
       core.config.extensionAvailable=true;
       core.config.extension = new Extension(core, core.config.modelData);
     } catch (e) {
-      console.log(e);
+      console.log("Es existiert keine Erweiterung ./extension/" + core.config.techName + ".js");
       core.config.extensionAvailable=false;
     }
 
@@ -27,7 +27,7 @@ function main () {
         } catch (e) {console.warn(e.message); throw e;}
       }
 
-      box.logMeasurements();
+      //box.logMeasurements();
       box.export();
     }
 
