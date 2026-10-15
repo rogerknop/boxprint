@@ -31,17 +31,17 @@
             "screws": [
                 {
                     "active": true,
-                    "positionLid": false,
+                    "position": "f",   //f=front / b=back / l=left / r=right / g=boden / t=deckel
                     "height": 3.5,
                     "shiftWidth": -14.5,
-                    "shiftDepth": 0
+                    "shiftHeight": 3
                 },
                 {
                     "active": true,
-                    "positionLid": true,
+                    "position": "f",   //f=front / b=back / l=left / r=right / g=boden / t=deckel
                     "height": 3.5,
                     "shiftWidth": 14.5,
-                    "shiftDepth": 0
+                    "shiftHeight": 3
                 }
             ]
         },

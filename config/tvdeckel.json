@@ -44,28 +44,28 @@
             "screws": [
                 {
                     "active": true,
-                    "positionLid": false,
+                    "position": "g",   //f=front / b=back / l=left / r=right / g=boden / t=deckel
                     "height": 16.5,
                     "shiftWidth": 42,
                     "shiftDepth": 87
                 },
                 {
                     "active": true,
-                    "positionLid": false,
+                    "position": "g",   //f=front / b=back / l=left / r=right / g=boden / t=deckel
                     "height": 16.5,
                     "shiftWidth": -42,
                     "shiftDepth": 87
                 },
                 {
                     "active": true,
-                    "positionLid": false,
+                    "position": "g",   //f=front / b=back / l=left / r=right / g=boden / t=deckel
                     "height": 16.5,
                     "shiftWidth": 42,
                     "shiftDepth": -87
                 },
                 {
                     "active": true,
-                    "positionLid": false,
+                    "position": "g",   //f=front / b=back / l=left / r=right / g=boden / t=deckel
                     "height": 16.5,
                     "shiftWidth": -42,
                     "shiftDepth": -87

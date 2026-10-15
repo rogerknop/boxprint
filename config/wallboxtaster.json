@@ -45,7 +45,7 @@
             "screws": [
                 {
                     "active": true,
-                    "positionLid": true,
+                    "position": "t",   //f=front / b=back / l=left / r=right / g=boden / t=deckel
                     "height": 4,
                     "shiftHeight": -10,
                     "shiftWidth": 22,

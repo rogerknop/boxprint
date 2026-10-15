@@ -155,7 +155,7 @@ class Box {
 
         if (this.socketSingleScrewControl?.active && (this.socketSingleScrewControl?.screws?.length>0)) {
             this.socketSingleScrewControl.screws.forEach((screw, idx) => {
-                if (screw.active && !screw.positionLid) result = this.addScrewSocket(result, screw, idx);
+                if (screw.active && this.getScrewPosition(screw)!="t") result = this.addScrewSocket(result, screw, idx);
             });
         }
 
@@ -260,7 +260,7 @@ class Box {
 
         if (this.socketSingleScrewControl?.active && (this.socketSingleScrewControl?.screws?.length>0)) {
             this.socketSingleScrewControl.screws.forEach((screw, idx) => {
-                if (screw.active && screw.positionLid) result = this.addScrewSocket(result, screw, idx);
+                if (screw.active && this.getScrewPosition(screw)=="t") result = this.addScrewSocket(result, screw, idx);
             });
         }
 
@@ -380,31 +380,85 @@ class Box {
     addScrewSocket(result, screw, idx) {
         let logNr = 1000 + ((idx-1) * 10);
         let screwSocket = this.getScrewSocket(screw.height);
-        let socket_height = this.thickness+(screw.height/2);
+        let position = this.getScrewPosition(screw);
+        let lochBreite = this.screw.outerRadius * 2;
 
-        if (screw.positionLid) {
-            this.addLog(logNr+1, "  - Single Schraubsockel Deckel:");
-            socket_height = this.computed.lid_thickness_complete+(screw.height/2);
+        if (position=="t" || position=="g") {
+            let socket_height = this.thickness+(screw.height/2);
+            if (position=="t") {
+                this.addLog(logNr+1, "  - Single Schraubsockel Deckel:");
+                socket_height = this.computed.lid_thickness_complete+(screw.height/2);
+            }
+            else {
+                this.addLog(logNr+1, "  - Single Schraubsockel Boden:");
+            }
+
+            screwSocket = center({relativeTo: [-screw.shiftWidth, screw.shiftDepth, socket_height]}, screwSocket);
+            result = union(result, screwSocket);
+
+            let abstandMitte = screw.shiftWidth;
+            let abstandWandMittig = this.computed.innerWidth - lochBreite;
+            this.addLog(logNr+3, "    . Abstand Wand 1: " + ((abstandWandMittig/2) - abstandMitte).toFixed(2));
+            this.addLog(logNr+4, "    . Abstand Wand 2: " + ((abstandWandMittig/2) + abstandMitte).toFixed(2));
+            abstandMitte = screw.shiftDepth;
+            abstandWandMittig = this.computed.innerDepth - lochBreite;
+            this.addLog(logNr+5, "    . Abstand Wand 3: " + ((abstandWandMittig/2) - abstandMitte).toFixed(2));
+            this.addLog(logNr+6, "    . Abstand Wand 4: " + ((abstandWandMittig/2) + abstandMitte).toFixed(2));
         }
         else {
-            this.addLog(logNr+1, "  - Single Schraubsockel Boden:");
+            // Seitliche Montage (f/b/l/r): Sockel wächst von der Innenseite der Wand nach innen
+            let rotateX=0;
+            let rotateY=0;
+            let width=0;
+            let depth=0;
+            let height = this.computed.innerCenterHeight + (screw.shiftHeight||0);
+            let shiftWidth = screw.shiftWidth||0;
+
+            if (position=="b") {
+                rotateX=90;
+                width = shiftWidth;
+                depth = -((this.computed.innerDepth/2) - (screw.height/2));
+                this.addLog(logNr+1, "  - Single Schraubsockel Wand Hinten:");
+            }
+            if (position=="f") {
+                rotateX=90;
+                width = -shiftWidth;
+                depth = ((this.computed.innerDepth/2) - (screw.height/2));
+                this.addLog(logNr+1, "  - Single Schraubsockel Wand Vorne:");
+            }
+            if (position=="r") {
+                rotateX=90;
+                rotateY=90;
+                depth = -shiftWidth;
+                width = ((this.computed.innerWidth/2) - (screw.height/2));
+                this.addLog(logNr+1, "  - Single Schraubsockel Wand Rechts:");
+            }
+            if (position=="l") {
+                rotateX=90;
+                rotateY=90;
+                depth = shiftWidth;
+                width = -((this.computed.innerWidth/2) - (screw.height/2));
+                this.addLog(logNr+1, "  - Single Schraubsockel Wand Links:");
+            }
+
+            screwSocket = rotate([degToRad(rotateX), 0, degToRad(rotateY)], screwSocket);
+            screwSocket = center({relativeTo: [width, depth, height]}, screwSocket);
+            result = union(result, screwSocket);
+
+            let abstandMitte = (position=="f" || position=="b") ? width : depth;
+            let abstandWandMittig = (position=="f" || position=="b") ? this.computed.innerWidth - lochBreite : this.computed.innerDepth - lochBreite;
+            this.addLog(logNr+3, "    . Abstand Wand 1: " + ((abstandWandMittig/2) - abstandMitte).toFixed(2));
+            this.addLog(logNr+4, "    . Abstand Wand 2: " + ((abstandWandMittig/2) + abstandMitte).toFixed(2));
+            this.addLog(logNr+5, "    . Abstand Boden: " + (height - this.thickness).toFixed(2));
         }
 
-        screwSocket = center({relativeTo: [-screw.shiftWidth, screw.shiftDepth, socket_height]}, screwSocket);
-        result = union(result, screwSocket);
-
-        let lochBreite = this.screw.outerRadius * 2;
-        let abstandMitte = screw.shiftWidth;
-        let abstandWandMittig = this.computed.innerWidth - lochBreite;
-
-        this.addLog(logNr+3, "    . Abstand Wand 1: " + ((abstandWandMittig/2) - abstandMitte).toFixed(2));
-        this.addLog(logNr+4, "    . Abstand Wand 2: " + ((abstandWandMittig/2) + abstandMitte).toFixed(2));
-        abstandMitte = screw.shiftDepth;
-        abstandWandMittig = this.computed.innerDepth - lochBreite;
-        this.addLog(logNr+5, "    . Abstand Wand 3: " + ((abstandWandMittig/2) - abstandMitte).toFixed(2));
-        this.addLog(logNr+6, "    . Abstand Wand 4: " + ((abstandWandMittig/2) + abstandMitte).toFixed(2));
-
         return result;
+    }
+
+    //-----------------------------------------------------------------------------------------------------------------
+    getScrewPosition(screw) {
+        if (screw.position) return screw.position;
+        return screw.positionLid ? "t" : "g";
     }
 
     //-----------------------------------------------------------------------------------------------------------------

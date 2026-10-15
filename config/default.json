@@ -49,14 +49,14 @@
             "screws": [
                 {
                     "active": true,
-                    "positionLid": false,
+                    "position": "g",   //f=front / b=back / l=left / r=right / g=boden / t=deckel
                     "height": 8.5,
                     "shiftWidth": 14,
                     "shiftDepth": 10
                 },
                 {
                     "active": true,
-                    "positionLid": true,
+                    "position": "t",   //f=front / b=back / l=left / r=right / g=boden / t=deckel
                     "height": 2.5,
                     "shiftWidth": 26,
                     "shiftDepth": 0
