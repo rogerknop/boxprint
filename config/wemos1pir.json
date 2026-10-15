@@ -31,7 +31,7 @@
             "screws": [
                 {
                     "active": true,
-                    "positionLid": true,
+                    "positionLid": false,
                     "height": 3.5,
                     "shiftWidth": -14.5,
                     "shiftDepth": 0
@@ -70,12 +70,21 @@
                 },
                 {
                     "active": true,
-                    "position": "t" , //f=front / b=back / l=left / r=right / g=round / t=top (=lid)
+                    "position": "f" , //f=front / b=back / l=left / r=right / g=round / t=top (=lid)
                     "shape": "c", //c=circle / r=rectangle
                     "radius": 11.7,
                     //Shift vom Mittelpunkt
                     "shiftWidth": 0,
-                    "shiftDepth": 0
+                    "shiftHeight": 3
+                },
+                {
+                    "active": true,
+                    "position": "b" , //f=front / b=back / l=left / r=right / g=round / t=top (=lid)
+                    "shape": "c", //c=circle / r=rectangle
+                    "radius": 11.7,
+                    //Shift vom Mittelpunkt
+                    "shiftWidth": 0,
+                    "shiftHeight": 3
                 }
             ]
         },
